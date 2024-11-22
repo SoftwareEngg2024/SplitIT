@@ -17,6 +17,7 @@ import add_group_exp
 import pdf
 import link
 import plot_graphs
+import ocr_scan
 from datetime import datetime
 from jproperties import Properties
 
@@ -136,6 +137,10 @@ def command_category(message):
 @bot.message_handler(commands=['link'])
 def command_add_link(message):
     link.run(message, bot)
+
+@bot.message_handler(commands=['scan'])
+def command_scan(message):
+    ocr_scan.run(message, bot)
 
 
 # not used
