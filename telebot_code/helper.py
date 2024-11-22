@@ -74,6 +74,11 @@ currency_options = {
     'PLN': 'PLN'
 }
 
+scanned_expense_options = {
+    "complete": "Complete Expense",
+    "brokenUp": "Break Up Expense"
+}
+
 
 # set of implemented commands and their description
 commands = {
@@ -367,3 +372,6 @@ def getIncomeOrExpense():
 
 def getCurrencyOptions():
     return currency_options
+
+def getScannedExpenseOptions():
+    return scanned_expense_options
