@@ -153,3 +153,20 @@ def post_type_selection(message, bot):
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)
+
+def fetch_user_expenses(user_id):
+    """Fetch user expenses from the database."""
+    # Dummy implementation; replace with actual database query
+    return [
+        {"category": "Food", "amount": 20, "date": "2024-11-01"},
+        {"category": "Transport", "amount": 15, "date": "2024-11-02"}
+    ]
+
+def format_expenses(expenses):
+    """Format expenses for display or email."""
+    if not expenses:
+        return "No expenditures recorded this month."
+    summary = "Your Monthly Expenditures:\n\n"
+    for expense in expenses:
+        summary += f"Category: {expense['category']}, Amount: {expense['amount']}, Date: {expense['date']}\n"
+    return summary
