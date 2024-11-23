@@ -38,3 +38,41 @@ def test_future_dates():
     except Exception as E:
         assert False  # If exception is raised, the test fails
 
+# Test 4: Test granularity set to 'month'
+def test_granularity_month():
+    df = pd.DataFrame({
+        'name': ['user1', 'user2'],
+        'timestamp': ['2024-11-01', '2024-11-15'],
+        'expense': [10, 20]
+    })
+    try:
+        expense_graph.plot_expenses_with_histogram(df, granularity='month')
+        assert True  # If no exception is raised, the test passes
+    except Exception as E:
+        assert False  # If exception is raised, the test fails
+
+# Test 5: Test multiple users on the same day
+def test_multiple_users_one_day():
+    df = pd.DataFrame({
+        'name': ['user1', 'user2'],
+        'timestamp': ['2024-11-23', '2024-11-23'],
+        'expense': [10, 20]
+    })
+    try:
+        expense_graph.plot_expenses_with_histogram(df, granularity='day')
+        assert True  # If no exception is raised, the test passes
+    except Exception as E:
+        assert False  # If exception is raised, the test fails
+
+# Test 6: Test single user, single day scenario
+def test_single_user_single_day():
+    df = pd.DataFrame({
+        'name': ['user1'],
+        'timestamp': ['2024-11-23'],
+        'expense': [10]
+    })
+    try:
+        expense_graph.plot_expenses_with_histogram(df, granularity='day')
+        assert True  # If no exception is raised, the test passes
+    except Exception as E:
+        assert False  # If exception is raised, the test fails
