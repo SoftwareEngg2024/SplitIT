@@ -125,3 +125,28 @@ def read_user_with_email(email_id):
     else:
         print("No user found with that email id.")
         return None
+    
+def save_user_email(telegram_user_id, email):
+    """Save or update the user's email by Telegram user ID."""
+    result = collectionUsers.update_one(
+        {"telegram_user_id": telegram_user_id},
+        {"$set": {"email": email}},
+        upsert=True
+    )
+    if result.upserted_id or result.modified_count > 0:
+        print(f"Email saved/updated for Telegram user ID: {telegram_user_id}")
+    else:
+        print(f"Failed to save/update email for Telegram user ID: {telegram_user_id}")
+
+def get_user_email(telegram_user_id):
+    """Retrieve the user's email by Telegram user ID."""
+    result = collectionUsers.find_one({"telegram_user_id": telegram_user_id})
+    if result and "email" in result:
+        email = result["email"]
+        print(f"Retrieved email: {email} for Telegram user ID: {telegram_user_id}")
+        return email
+    else:
+        print(f"No email found for Telegram user ID: {telegram_user_id}")
+        return None  # Explicitly return None if no email exists
+
+
