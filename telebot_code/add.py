@@ -24,14 +24,17 @@ def run(message, bot):
     for c in options.values():
         markup.add(c)
     msg = bot.reply_to(message, 'Select Income or Expense', reply_markup=markup)
-    bot.register_next_step_handler(msg, post_type_selection, bot)
+    bot.register_next_step_handler(msg, post_type_selection, bot, "", 0)
 
 
-def post_type_selection(message, bot):
+def post_type_selection(message, bot, type, retry):
     try:
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        user_id = message.from_user.id
-        selectedType = message.text
+        if retry == 1:
+            selectedType = type
+        else:
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            user_id = message.from_user.id
+            selectedType = message.text
         if selectedType == "Income":
             for c in helper.getIncomeCategories():
                 markup.add(c)
@@ -56,16 +59,24 @@ def post_category_selection(message, bot, selectedType):
         else:
             categories = helper.getSpendCategories()
         if selected_category not in categories:
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognise this category \"{}\"!".format(selected_category))
-        selectedCat[user_id] = selected_category
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        options = helper.getCurrencyOptions()
-        markup.row_width = 3
-        for c in options.values():
-            markup.add(c)
-        msg = bot.reply_to(message, 'Select Currency', reply_markup=markup)
-        bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
+            bot.send_message(chat_id, 'Try Again.')
+            if selectedType == "Income":
+                for c in helper.getIncomeCategories():
+                    markup.add(c)
+            else:
+                for c in helper.getSpendCategories():
+                    markup.add(c)
+            msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
+            bot.register_next_step_handler(msg, post_category_selection, bot, selectedType)
+        else:
+            selectedCat[user_id] = selected_category
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            options = helper.getCurrencyOptions()
+            markup.row_width = 3
+            for c in options.values():
+                markup.add(c)
+            msg = bot.reply_to(message, 'Select Currency', reply_markup=markup)
+            bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, 'Oh no. ' + str(e))
@@ -79,14 +90,20 @@ def post_currency_selection(message, bot, selected_category):
         selectedCurrency = message.text
         currencyOptions = helper.getCurrencyOptions()
         if selectedCurrency not in currencyOptions:
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognise this currency \"{}\"!".format(selectedCurrency))
-        selectedCurr[user_id] = selectedCurrency
-        if str(selectedTyp[user_id]) == "Income" :
-            message = bot.send_message(chat_id, 'How much did you receive through {}? \n(Enter numeric values only)'.format(str(selected_category)))
+
+            options = helper.getCurrencyOptions()
+            markup.row_width = 3
+            for c in options.values():
+                markup.add(c)
+            msg = bot.reply_to(message, 'Try again. Select Currency', reply_markup=markup)
+            bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
         else:
-            message = bot.send_message(chat_id, 'How much did you spend on {}? \n(Enter numeric values only)'.format(str(selected_category)))
-        bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
+            selectedCurr[user_id] = selectedCurrency
+            if str(selectedTyp[user_id]) == "Income" :
+                message = bot.send_message(chat_id, 'How much did you receive through {}? \n(Enter numeric values only)'.format(str(selected_category)))
+            else:
+                message = bot.send_message(chat_id, 'How much did you spend on {}? \n(Enter numeric values only)'.format(str(selected_category)))
+            bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)
@@ -99,29 +116,49 @@ def post_amount_input(message, bot, selectedCurrency):
         amount_entered = message.text
         amount_value = helper.validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Spent amount has to be a non-zero number.")
-        selectedAm[user_id] = amount_value   
-        calendar, step = DetailedTelegramCalendar().build()
-        bot.send_message(chat_id, f"Select {LSTEP[step]}", reply_markup=calendar)
+            message = bot.send_message(chat_id, "Try again with a non zero value.")
+            bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
+        else:
+            selectedAm[user_id] = amount_value   
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.add("Custom")
+            markup.add("Today")
 
-        @bot.callback_query_handler(func=DetailedTelegramCalendar.func())
-        def cal(c):
-            result, key, step = DetailedTelegramCalendar().process(c.data)
+            msg = bot.reply_to(message, "Do you want to enter today's date or a custom date?", reply_markup=markup)
+            bot.register_next_step_handler(msg, post_date_choice_input, bot)
+    except Exception as e:
+        logging.exception(str(e))
+        bot.reply_to(message, 'Oh no. ' + str(e))
 
-            if not result and key:
-                bot.edit_message_text(
-                    f"Select {LSTEP[step]}",
-                    c.message.chat.id,
-                    c.message.message_id,
-                    reply_markup=key,
-                )
-            elif result:
-                post_date_input(message,bot, result)
-                bot.edit_message_text(
-                    f"Date is set: {result}",
-                    c.message.chat.id,
-                    c.message.message_id,
-                )
+def post_date_choice_input(message, bot):
+    try:
+        if message.text == "Today":
+            post_date_input(message, bot, date.today())
+        else:
+            chat_id = message.chat.id
+            user_id = message.from_user.id
+            calendar, step = DetailedTelegramCalendar().build()
+            bot.send_message(chat_id, f"Select {LSTEP[step]}", reply_markup=calendar)
+            
+        
+            @bot.callback_query_handler(func=DetailedTelegramCalendar.func())
+            def cal(c):
+                result, key, step = DetailedTelegramCalendar().process(c.data)
+
+                if not result and key:
+                    bot.edit_message_text(
+                        f"Select {LSTEP[step]}",
+                        c.message.chat.id,
+                        c.message.message_id,
+                        reply_markup=key,
+                    )
+                elif result:
+                    post_date_input(message,bot, result)
+                    bot.edit_message_text(
+                        f"Date is set: {result}",
+                        c.message.chat.id,
+                        c.message.message_id,
+                    )
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, 'Oh no. ' + str(e))
@@ -176,7 +213,12 @@ def post_date_input(message, bot, date_entered):
         if start_date <= date_object <= end_date:
             amountval = actual_curr_val(currency, amount, formatted_date)
         else:
-            raise Exception(f"Error: Future dates are not allowed.")
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            markup.add("Custom")
+            markup.add("Today")
+            
+            msg = bot.reply_to(message, "Try again. Do you want to enter today's date or a custom date?", reply_markup=markup)
+            bot.register_next_step_handler(msg, post_date_choice_input, bot)
 
         # if currency == 'Euro':
         #     actual_value = float(amount) * 1.05
