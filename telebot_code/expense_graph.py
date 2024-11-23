@@ -1,5 +1,8 @@
-import pandas
+import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from datetime import datetime
+
 def plot_expenses_with_histogram(df, granularity='day'):
     users = df['name'].unique()
     fig, ax1 = plt.subplots(figsize=(12, 6))
@@ -31,6 +34,6 @@ def plot_expenses_with_histogram(df, granularity='day'):
 
     ax1.legend(loc='upper left')
     plt.title(f"Expenses ({granularity.capitalize()}wise) per User with Total Expenses")
-    plt.show()
+    plt.savefig("temp.png")
 
-plot_expenses_with_histogram(df_daywise, granularity='day')
+#plot_expenses_with_histogram(df_daywise, granularity='day')
