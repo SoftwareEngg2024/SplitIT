@@ -3,7 +3,21 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
 
-def plot_expenses_with_histogram(df, granularity='day'):
+def run(message, bot):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    markup.add("Daywise")
+    markup.add("Monthwise")
+    msg = bot.reply_to(message, "Select if you want a daywise or a monthwise graph:", reply_markup=markup)
+    bot.register_next_step_handler(msg, monthwise_or_daywise_record, bot)
+
+def monthwise_or_daywise_record(message, bot):
+    if message.text == "Daywise":
+        gran = 'day'
+    else:
+        gran ='month'
+    
+
+def plot_expenses_with_histogram(df, granularity='day', ndays=0):
     users = df['name'].unique()
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
@@ -36,4 +50,29 @@ def plot_expenses_with_histogram(df, granularity='day'):
     plt.title(f"Expenses ({granularity.capitalize()}wise) per User with Total Expenses")
     plt.savefig("temp.png")
 
-#plot_expenses_with_histogram(df_daywise, granularity='day')
+def plot_single_user_expenses(df, userid, granularity='day'):
+    # Filter data for the specified user
+    user_data = df[df['userid'] == userid]
+
+    if user_data.empty:
+        print(f"No data found for userid {userid}.")
+        return
+
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+
+    # Plot user expenses
+    ax1.plot(user_data['timestamp'], user_data['expense'], label=f"User {userid}", marker='o')
+
+    # Format x-axis
+    ax1.xaxis.set_major_locator(mdates.DayLocator() if granularity == 'day' else mdates.MonthLocator())
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d' if granularity == 'day' else '%Y-%m'))
+    fig.autofmt_xdate()
+
+    # Set labels and title
+    ax1.set_xlabel(f"{granularity.capitalize()}s")
+    ax1.set_ylabel("Expense Amount")
+    plt.title(f"Expenses ({granularity.capitalize()}wise) for User {userid}")
+
+    # Add legend and show plot
+    ax1.legend(loc='upper left')
+    plt.savefig("temp.png")
