@@ -76,3 +76,58 @@ def test_single_user_single_day():
         assert True  # If no exception is raised, the test passes
     except Exception as E:
         assert False  # If exception is raised, the test fails
+
+# Test 7: Test for duplicate entries
+def test_duplicate_entries():
+    duplicate_data = [
+        {"name": "Alice", "userid": 1, "timestamp": "2024-11-01", "expense": 120},
+        {"name": "Alice", "userid": 1, "timestamp": "2024-11-01", "expense": 120},  # Duplicate
+        {"name": "Bob", "userid": 2, "timestamp": "2024-11-02", "expense": 200},
+    ]
+    duplicate_df = pd.DataFrame(duplicate_data)
+    duplicate_df['timestamp'] = pd.to_datetime(duplicate_df['timestamp'])
+    duplicate_df_daywise = duplicate_df.groupby(['name', duplicate_df['timestamp'].dt.date])['expense'].sum().reset_index()
+    duplicate_df_daywise['timestamp'] = pd.to_datetime(duplicate_df_daywise['timestamp'])
+    
+    try:
+        expense_graph.plot_expenses_with_histogram(duplicate_df_daywise, granularity='day')
+        assert True  # If no exception is raised, the test passes
+    except Exception as E:
+        assert False  # If exception is raised, the test fails
+
+
+# Test 8: Test for missing timestamp data
+def test_missing_timestamp_data():
+    missing_timestamp_data = [
+        {"name": "Alice", "userid": 1, "timestamp": "2024-11-01", "expense": 120},
+        {"name": "Bob", "userid": 2, "timestamp": None, "expense": 200},  # Missing timestamp
+    ]
+    missing_timestamp_df = pd.DataFrame(missing_timestamp_data)
+    missing_timestamp_df['timestamp'] = pd.to_datetime(missing_timestamp_df['timestamp'], errors='coerce')  # Coerce invalid dates to NaT
+    missing_timestamp_df_daywise = missing_timestamp_df.groupby(['name', missing_timestamp_df['timestamp'].dt.date])['expense'].sum().reset_index()
+    missing_timestamp_df_daywise['timestamp'] = pd.to_datetime(missing_timestamp_df_daywise['timestamp'])
+    
+    try:
+        expense_graph.plot_expenses_with_histogram(missing_timestamp_df_daywise, granularity='day')
+        assert True
+    except Exception as E: 
+        assert False
+
+# Test 10: Test for negative expense values
+def test_negative_expense_values():
+    negative_expense_data = [
+        {"name": "Alice", "userid": 1, "timestamp": "2024-11-01", "expense": -50},  # Negative expense
+        {"name": "Bob", "userid": 2, "timestamp": "2024-11-02", "expense": 200},
+    ]
+    negative_expense_df = pd.DataFrame(negative_expense_data)
+    negative_expense_df['timestamp'] = pd.to_datetime(negative_expense_df['timestamp'])
+    negative_expense_df_daywise = negative_expense_df.groupby(['name', negative_expense_df['timestamp'].dt.date])['expense'].sum().reset_index()
+    negative_expense_df_daywise['timestamp'] = pd.to_datetime(negative_expense_df_daywise['timestamp'])
+    
+    try:
+        expense_graph.plot_expenses_with_histogram(negative_expense_df_daywise, granularity='day')
+        assert True  # If no exception occurs, the test passes
+    except Exception as E:
+        assert False  # An exception is unexpected here
+
+
