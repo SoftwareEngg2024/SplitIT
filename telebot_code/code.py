@@ -20,8 +20,11 @@ import plot_graphs
 import ocr_scan
 from datetime import datetime
 from jproperties import Properties
+import sys
 
 configs = Properties()
+
+
 
 with open('user.properties', 'rb') as read_prop:
     configs.load(read_prop)
