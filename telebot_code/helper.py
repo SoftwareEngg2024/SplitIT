@@ -90,7 +90,8 @@ commands = {
     'budget': 'Add/Update/View/Delete budget',
     'category': 'Add/Delete/Show custom categories',
     'link': 'Link Telegram User with email',
-    'pdf': 'Generate a pdf for Income or History'
+    'pdf': 'Generate a pdf for Income or History',
+    'expense_graph': 'Generate an expense timeline graph for yourself or for your group.'
 }
 
 
