@@ -156,6 +156,8 @@ def post_type_selection(message, bot):
 
 def fetch_user_expenses(user_id):
     """Fetch user expenses from the database."""
+    # Use db_operations.read_user_transaction(user_id)
+    # Then put all retrieved transactions into format below. Check the photo for the record format.
     # Dummy implementation; replace with actual database query
     return [
         {"category": "Food", "amount": 20, "date": "2024-11-01"},
