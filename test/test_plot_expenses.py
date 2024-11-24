@@ -113,7 +113,7 @@ def test_missing_timestamp_data():
     except Exception as E: 
         assert False
 
-# Test 10: Test for negative expense values
+# Test 9: Test for negative expense values
 def test_negative_expense_values():
     negative_expense_data = [
         {"name": "Alice", "userid": 1, "timestamp": "2024-11-01", "expense": -50},  # Negative expense
@@ -129,5 +129,40 @@ def test_negative_expense_values():
         assert True  # If no exception occurs, the test passes
     except Exception as E:
         assert False  # An exception is unexpected here
+
+def test_single_user_valid_data_day():
+    # Test with valid data for a single user with day granularity
+    test_data = [
+        {"userid": 1, "timestamp": "2024-11-01", "expense": 120},
+        {"userid": 1, "timestamp": "2024-11-02", "expense": 90},
+        {"userid": 1, "timestamp": "2024-11-03", "expense": 70},
+    ]
+    test_df = pd.DataFrame(test_data)
+    test_df['timestamp'] = pd.to_datetime(test_df['timestamp'])
+
+    try:
+        expense_graph.plot_single_user_expenses(test_df, userid=1, granularity='day')
+        assert True  # If no exception occurs, the test passes
+    except Exception as e:
+        assert False 
+
+def test_no_data_for_user():
+    # Test with no data for the specified user
+    test_data = [
+        {"userid": 2, "timestamp": "2024-11-01", "expense": 120},
+        {"userid": 2, "timestamp": "2024-11-02", "expense": 90},
+    ]
+    test_df = pd.DataFrame(test_data)
+    test_df['timestamp'] = pd.to_datetime(test_df['timestamp'])
+
+    try:
+        expense_graph.plot_single_user_expenses(test_df, userid=1, granularity='day')
+        assert True  # No exception is expected, but we need to ensure the user message is printed
+    except Exception as e:
+        assert False
+
+
+
+
 
 
