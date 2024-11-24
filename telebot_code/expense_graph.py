@@ -32,14 +32,14 @@ def vis_graph_record(message, bot, granularity):
     chid = message.chat.id
     if not txt.isnumeric():
         msg = bot.reply_to(message, "Sorry, please enter only a whole number. Enter the number of "+granularity+"s you want to show on the graph")
-        bot.register_next_step_handler(msg, vis_graph_record, bot, gran)
+        bot.register_next_step_handler(msg, vis_graph_record, bot, granularity)
     else:
         num_ele = int(txt)
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         markup.add("Mine")
         markup.add("Group")
         msg = bot.reply_to(message, "Do you want to plot your expenses or group expenses?", reply_markup = markup)
-        bot.register_next_step_handler(msg, single_or_group_expenses, bot, gran, num_ele)
+        bot.register_next_step_handler(msg, single_or_group_expenses, bot, granularity, num_ele)
 
 def single_or_group_expenses(message, bot, granularity, ndays):
     chid = message.chat.id
