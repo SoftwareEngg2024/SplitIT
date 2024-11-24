@@ -1,75 +1,75 @@
 {
     "meta": {
-        "last_updated_at": "2023-08-21T23:59:59Z"
+        "last_updated_at": "2024-01-02T23:59:59Z"
     },
     "data": {
         "AUD": {
             "code": "AUD",
-            "value": 1.5591602043
+            "value": 1.4779102441
         },
         "BRL": {
             "code": "BRL",
-            "value": 4.9794807943
+            "value": 4.9229309835
         },
         "CAD": {
             "code": "CAD",
-            "value": 1.3543302398
+            "value": 1.3319701806
         },
         "CHF": {
             "code": "CHF",
-            "value": 0.8785001304
+            "value": 0.849780125
         },
         "DKK": {
             "code": "DKK",
-            "value": 6.8371909366
+            "value": 6.8119607886
         },
         "EUR": {
             "code": "EUR",
-            "value": 0.9174501033
+            "value": 0.9135501695
         },
         "GBP": {
             "code": "GBP",
-            "value": 0.7836901052
+            "value": 0.7921001133
         },
         "HKD": {
             "code": "HKD",
-            "value": 7.838510912
+            "value": 7.8143508372
         },
         "INR": {
             "code": "INR",
-            "value": 83.0621950528
+            "value": 83.1972344458
         },
         "JPY": {
             "code": "JPY",
-            "value": 146.228138886
+            "value": 142.114286267
         },
         "KRW": {
             "code": "KRW",
-            "value": 1338.5999436868
+            "value": 1310.5264018977
         },
         "MXN": {
             "code": "MXN",
-            "value": 17.0170520569
+            "value": 17.0225023376
         },
         "NOK": {
             "code": "NOK",
-            "value": 10.6172319656
+            "value": 10.3452012545
         },
         "NZD": {
             "code": "NZD",
-            "value": 1.6866403249
+            "value": 1.5999701944
         },
         "PLN": {
             "code": "PLN",
-            "value": 4.1045407207
+            "value": 3.9894105058
         },
         "SEK": {
             "code": "SEK",
-            "value": 10.9488116647
+            "value": 10.2016716145
         },
         "TWD": {
             "code": "TWD",
-            "value": 31.9518547049
+            "value": 30.9110753044
         },
         "USD": {
             "code": "USD",
@@ -77,7 +77,7 @@
         },
         "ZAR": {
             "code": "ZAR",
-            "value": 18.9685921117
+            "value": 18.5625835375
         }
     }
 }
