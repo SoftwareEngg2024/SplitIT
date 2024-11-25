@@ -1,5 +1,7 @@
 import pandas
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
 def plot_expenses_with_histogram(df, granularity='day'):
     users = df['name'].unique()
     fig, ax1 = plt.subplots(figsize=(12, 6))
