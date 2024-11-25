@@ -84,6 +84,9 @@ A successful run will display:
 TeleBot: Started polling.
 ```
 
+## Documentation 
+Refer here [Wiki Page](https://github.com/SoftwareEngg2024/SplitIT/wiki/Delta-file-(New-Changes-since-last-version))
+
 ## Bug
 Raise an issue on this repository, we would love to look at it!
 
