@@ -1,6 +1,8 @@
 pyTelegramBotAPI
 pytest
 pytest-cov
+mock
+imutils
 coveralls
 jproperties
 flake8
