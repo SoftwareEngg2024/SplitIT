@@ -3,6 +3,7 @@ pytest
 pytest-cov
 mock
 imutils
+scipy
 coveralls
 jproperties
 flake8
