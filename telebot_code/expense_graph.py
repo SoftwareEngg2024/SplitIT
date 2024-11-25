@@ -35,4 +35,4 @@ def plot_expenses_with_histogram(df, granularity='day'):
     plt.title(f"Expenses ({granularity.capitalize()}wise) per User with Total Expenses")
     plt.show()
 
-plot_expenses_with_histogram(df_daywise, granularity='day')
+# plot_expenses_with_histogram(df_daywise, granularity='day')
