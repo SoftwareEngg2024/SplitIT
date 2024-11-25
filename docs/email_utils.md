@@ -35,6 +35,12 @@ This function can be used to send emails programmatically by providing the recip
 - `EMAIL_ADDRESS`: Your Gmail address, loaded securely from the `.env` file.
 - `EMAIL_PASSWORD`: The Gmail app password, loaded securely from the `.env` file.
 
+## Screenshot
+
+Below is an example of the Email Sending Feature in action:
+
+<img src="https://raw.githubusercontent.com/SoftwareEngg2024/SplitIT/feature/email-reminder/assets/screenshot.jpg" alt="Feature Screenshot" width="500"/>
+
 ### Example Code Usage
 
 ```python
