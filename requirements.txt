@@ -8,6 +8,10 @@ pytest-mock
 python-telegram-bot
 python-telegram-bot-calendar
 currencyapicom
+opencv-python
+pytesseract
+thefuzz
+
 
 Flask
 Flask-PyMongo

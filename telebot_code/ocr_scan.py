@@ -18,7 +18,9 @@ from thefuzz import fuzz
 import re
 import pytesseract
 import requests
-from code import api_token
+from jproperties import Properties
+
+
 def isfloat(num):
     return num.replace('.','',1).replace(",", "", 1).isdigit()
 
@@ -30,10 +32,18 @@ def run(message, bot):
 
 def download_file(bot, photo):
     tempfile = bot.get_file(photo.file_id)
+    configs = Properties()
+    with open('user.properties', 'rb') as read_prop:
+        configs.load(read_prop)
+
+    api_token = str(configs.get('api_token').data)
     F = requests.get("https://api.telegram.org/file/bot"+str(api_token)+"/"+tempfile.file_path)
     fname = tempfile.file_path.split("/")[-1]
     with open(fname, "wb") as fp:
-        fp.write(F.content)
+        if len(F.content) == 0 or F.status_code != 200:
+            fname = None
+        else:
+            fp.write(F.content)
     return fname
 
 def photo_receive_handler(message, bot):
@@ -46,20 +56,25 @@ def photo_receive_handler(message, bot):
         photo = message.photo[-1]
         
         tempf = download_file(bot, photo)
-        img = cv2.imread(tempf)
-        exp = img_process(img_preprocess(img))
-        if exp["invalid"] == 1:
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-            markup.add("Yes")
-            markup.add("No")
-            msg = bot.reply_to(message, "The amounts were not correctly detected, or you might not have a compatible bill format. Do you want to enter manually?", reply_markup=markup)
-            bot.register_next_step_handler(msg, post_auto_or_manual_selection, bot)
-        else:   
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-            markup.add("Yes")
-            markup.add("No")
-            msg = bot.reply_to(message, "These are the amounts on the Scanned bill:\n"+print_exp(exp)+"\nAre you sure this is correct?", reply_markup=markup)
-            bot.register_next_step_handler(msg, expense_type_selection_or_retry, bot, exp)
+        if tempf is None:
+            raise Exception("fatal error: File could not be downloaded.")
+        else:
+            img = cv2.imread(tempf)
+            I = img_preprocess(img)
+        
+            exp = img_process(I)
+            if exp["invalid"] == 1:
+                markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+                markup.add("Yes")
+                markup.add("No")
+                msg = bot.reply_to(message, "The amounts were not correctly detected, or you might not have a compatible bill format. Do you want to enter manually?", reply_markup=markup)
+                bot.register_next_step_handler(msg, post_auto_or_manual_selection, bot)
+            else:   
+                markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+                markup.add("Yes")
+                markup.add("No")
+                msg = bot.reply_to(message, "These are the amounts on the Scanned bill:\n"+print_exp(exp)+"\nAre you sure this is correct?", reply_markup=markup)
+                bot.register_next_step_handler(msg, expense_type_selection_or_retry, bot, exp)
 
 def expense_type_selection_or_retry(message, bot, exp):
     if message.text == "Yes":
@@ -210,105 +225,111 @@ def print_exp(exp):
     return strp
         
 def img_preprocess(img):
-    image = img.copy()
-    if image.shape[0] < 800:
-        image = imutils.resize(image, width=800)
-    ratio = img.shape[1] / float(image.shape[1])
-    area = image.shape[0] * image.shape[1]
-
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (3,3,),0,)
-    edged = cv2.Canny(blurred, 65, 180)
-
-    contours = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    contours = imutils.grab_contours(contours)
-    contours = sorted(contours, key=cv2.contourArea, reverse=True)
-
-
-    receipt_contour = None
-
-    for c in contours:
-        
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-        
-        if len(approx) == 4:
-            receipt_contour = approx
-            break
-
-    # cv2.drawContours(image, [receipt_contour], -1, (0, 255, 0), 2)
-    # # cv2.imwrite('image_with_outline.jpg', image)
-    # cv2.imshow("Receipt Outline", image)
-    # cv2.waitKey(0)
-    if receipt_contour is None:
-        receipt = blurred
+    if img is None:
+        return None
     else:
-        receipt = imutils.perspective.four_point_transform(img, receipt_contour.reshape(4, 2) * ratio)
+        image = img.copy()
+        if image.shape[0] < 800:
+            image = imutils.resize(image, width=800)
+        ratio = img.shape[1] / float(image.shape[1])
+        area = image.shape[0] * image.shape[1]
 
-    receipt = cv2.cvtColor(receipt, cv2.COLOR_BGR2GRAY)
-    if (cv2.contourArea(receipt_contour)/area < 0.30):
-        receipt = blurred
-    g = cv2.threshold(receipt, 0, 255, cv2.THRESH_OTSU)[0]
-    g2 = cv2.threshold(receipt, g * 0.9, 255, cv2.THRESH_BINARY)[1]
-    return g2
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (3,3,),0,)
+        edged = cv2.Canny(blurred, 65, 180)
+
+        contours = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours = imutils.grab_contours(contours)
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+
+        receipt_contour = None
+
+        for c in contours:
+            
+            peri = cv2.arcLength(c, True)
+            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+            
+            if len(approx) == 4:
+                receipt_contour = approx
+                break
+
+        # cv2.drawContours(image, [receipt_contour], -1, (0, 255, 0), 2)
+        # # cv2.imwrite('image_with_outline.jpg', image)
+        # cv2.imshow("Receipt Outline", image)
+        # cv2.waitKey(0)
+        if receipt_contour is None:
+            receipt = blurred
+        else:
+            receipt = imutils.perspective.four_point_transform(img, receipt_contour.reshape(4, 2) * ratio)
+
+        receipt = cv2.cvtColor(receipt, cv2.COLOR_BGR2GRAY)
+        if (cv2.contourArea(receipt_contour)/area < 0.30):
+            receipt = blurred
+        g = cv2.threshold(receipt, 0, 255, cv2.THRESH_OTSU)[0]
+        g2 = cv2.threshold(receipt, g * 0.9, 255, cv2.THRESH_BINARY)[1]
+        return g2
 
 
 def img_process(img):
-    options = "--psm 6"
-    text = pytesseract.image_to_string(
-        cv2.cvtColor(img, cv2.COLOR_BGR2RGB), lang='eng', config=options
-    )
-    # show the raw output of the OCR process
-    print("[INFO] raw output:")
-    print("==================")
-    print(text)
-    print("\n")
-    sn = text.split("\n")
-    dictp = {}
-    taxcalc = 0
-    dictp["invalid"] = 0
-    dictp["prices"] = []
-    for line in sn:
-        P = line.split()
-        total_ratio = fuzz.partial_ratio(line, "TOTAL")
-        subtotal_ratio = fuzz.partial_ratio(line, "SUBTOTAL")
-        tax_ratio = fuzz.partial_ratio(line, "TAX")
-        
-        print(line)
-        print(total_ratio)
-        print(subtotal_ratio)
-        print(tax_ratio)
-        if subtotal_ratio > 80 and total_ratio <= subtotal_ratio:
-            s = re.findall(r"[$]?\d+[ ]*[,.][ ]*\d+", line)
-            if (len(s) == 0):
-                dictp["subtotal"] = "-1.0"
-            else:
-                dictp["subtotal"] = s[0].strip().replace(" ","").replace(",", ".").replace("$", "")
-        elif tax_ratio > 70.0:
-            continue
-        elif total_ratio > 80 and total_ratio >= subtotal_ratio:
-            s = re.findall(r"[$]?\d+[ ]*[,.][ ]*\d+", line)
-            print(s)
-            if (len(s) == 0):
-                dictp["total"] = "-1.0"
-            else:
-                dictp["total"] = s[0].strip().replace(" ","").replace(",", ".").replace("$", "")
-            break
-        else:
-            s = re.findall(r"[$]?\d+[ ]*[,.][ ]*\d+", line)
-            if len(s) == 0 or "TAX" in line:
-                continue
-            dictp["prices"].append(s[0].strip().replace(" ","").replace(",", ".").replace("$", ""))
-            pass
-    dictp["currency"] = "USD"
-    if "total" in dictp.keys() and "subtotal" in dictp.keys():
-        if isfloat(dictp["total"]) and isfloat(dictp["subtotal"]):
-            dictp["tax"] = str(round(float(dictp["total"]) - float(dictp["subtotal"]), 2))
-        else:
-
-            dictp["invalid"] = 1
+    if img is None:
+        return None
+    else:
+        options = "--psm 6"
+        text = pytesseract.image_to_string(
+            cv2.cvtColor(img, cv2.COLOR_BGR2RGB), lang='eng', config=options
+        )
+        # show the raw output of the OCR process
+        print("[INFO] raw output:")
+        print("==================")
+        print(text)
+        print("\n")
+        sn = text.split("\n")
+        dictp = {}
+        taxcalc = 0
+        dictp["invalid"] = 0
+        dictp["prices"] = []
+        for line in sn:
+            P = line.split()
+            total_ratio = fuzz.partial_ratio(line, "TOTAL")
+            subtotal_ratio = fuzz.partial_ratio(line, "SUBTOTAL")
+            tax_ratio = fuzz.partial_ratio(line, "TAX")
             
-            print("Invalid scan. Try again.")
-    elif len(dictp["prices"]) == 0:
-        dictp["invalid"] = 1
-    return dictp
+            print(line)
+            print(total_ratio)
+            print(subtotal_ratio)
+            print(tax_ratio)
+            if subtotal_ratio > 80 and total_ratio <= subtotal_ratio:
+                s = re.findall(r"[$]?\d+[ ]*[,.][ ]*\d+", line)
+                if (len(s) == 0):
+                    dictp["subtotal"] = "-1.0"
+                else:
+                    dictp["subtotal"] = s[0].strip().replace(" ","").replace(",", ".").replace("$", "")
+            elif tax_ratio > 70.0:
+                continue
+            elif total_ratio > 80 and total_ratio >= subtotal_ratio:
+                s = re.findall(r"[$]?\d+[ ]*[,.][ ]*\d+", line)
+                print(s)
+                if (len(s) == 0):
+                    dictp["total"] = "-1.0"
+                else:
+                    dictp["total"] = s[0].strip().replace(" ","").replace(",", ".").replace("$", "")
+                break
+            else:
+                s = re.findall(r"[$]?\d+[ ]*[,.][ ]*\d+", line)
+                if len(s) == 0 or "TAX" in line:
+                    continue
+                dictp["prices"].append(s[0].strip().replace(" ","").replace(",", ".").replace("$", ""))
+                pass
+        dictp["currency"] = "USD"
+        if "total" in dictp.keys() and "subtotal" in dictp.keys():
+            if isfloat(dictp["total"]) and isfloat(dictp["subtotal"]):
+                dictp["tax"] = str(round(float(dictp["total"]) - float(dictp["subtotal"]), 2))
+            else:
+
+                dictp["invalid"] = 1
+                
+                print("Invalid scan. Try again.")
+        elif len(dictp["prices"]) == 0:
+            dictp["invalid"] = 1
+        return dictp

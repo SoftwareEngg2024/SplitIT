@@ -81,7 +81,7 @@ def test_post_amount_input_working_withdata(mock_telebot, mocker):
     message = create_message("hello from testing!")
     message.from_user = types.User(11, False, 'test')
     add.post_amount_input(message, mc, 'Income')
-    assert(mc.send_message.called)
+    assert(mc.reply_to.called)
     
 
 @patch('telebot.telebot')
@@ -94,7 +94,7 @@ def test_post_amount_input_nonworking(mock_telebot, mocker):
     message = create_message("hello from testing!")
     message.from_user = types.User(11, False, 'test')
     add.post_amount_input(message, mc, 'Income')
-    assert(mc.reply_to.called)
+    assert(mc.send_message.called)
 
 
 # @patch('telebot.telebot')

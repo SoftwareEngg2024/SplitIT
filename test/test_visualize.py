@@ -42,18 +42,18 @@ def test_grp_exp_plot(mock_open_function):
 
 @patch('db_operations.read_user_transaction')
 def test_income_plot(mock1):
-    mock1.return_value = UserTransactions(telegram_user_id=6619121674)
+    mock1.return_value = UserTransactions(telegram_user_id=5216582755)
     with patch('matplotlib.pyplot.savefig') as mock_savefig:
-        visualize.income_plot(6619121674)
+        visualize.income_plot(5216582755)
 
     # Add assertions based on your expected behavior
     mock_savefig.assert_called_once_with('./graphs/income_chart.pdf')
 
 @patch('db_operations.read_user_transaction')
 def test_expense_plot(mock1):
-    mock1.return_value = UserTransactions(telegram_user_id=6619121674)
+    mock1.return_value = UserTransactions(telegram_user_id=5216582755)
     with patch('matplotlib.pyplot.savefig') as mock_savefig:
-        visualize.expense_plot(6619121674)
+        visualize.expense_plot(5216582755)
 
     # Add assertions based on your expected behavior
     mock_savefig.assert_called_once_with('./graphs/expense_chart.pdf')

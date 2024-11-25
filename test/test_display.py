@@ -12,7 +12,7 @@ def test_run(mock_telebot, mocker):
     message = create_message("hello from test run!")
     message.from_user = types.User(11, False, 'test')
     display.run(message, mc)
-    assert mc.send_message.called
+    assert mc.reply_to.called
 
 
 @patch('telebot.telebot')

@@ -24,8 +24,6 @@ import sys
 
 configs = Properties()
 
-
-
 with open('user.properties', 'rb') as read_prop:
     configs.load(read_prop)
 

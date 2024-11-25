@@ -1,4 +1,5 @@
 import helper
+import db_operations
 from db_operations import *
 
 def run(message, bot):
@@ -8,7 +9,7 @@ def run(message, bot):
     delete_history_text = ""
     userTransaction = read_user_transaction(user_id)
     if userTransaction != None:
-        delete_user_transaction(user_id=user_id)
+        delete_user_transaction(telegram_user_id=user_id)
     else:
         delete_history_text = "No records there to be deleted. Start adding your expenses to keep track of your spendings!"
     bot.send_message(chat_id, delete_history_text)

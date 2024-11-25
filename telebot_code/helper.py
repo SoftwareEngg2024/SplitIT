@@ -199,9 +199,11 @@ def createNewUserRecord():
 
 def getOverallBudget(userId):
     data = getUserData(userId)
+    print("Check here!!")
+    print(data)
     if data is None:
         return None
-    return data.budget['overall']
+    return data['budget']['overall']
 
 
 def getCategoryBudget(userId):
