@@ -60,7 +60,7 @@ def test_post_overall_amount_input_nonworking(mock_telebot, mocker):
     message.from_user = types.User(11, False, 'test')
     budget_update.post_overall_amount_input(message, mc)
 
-    assert(budget_update.helper.throw_exception.called)
+    assert(mc.send_message.called)
 
 
 @patch('telebot.telebot')
@@ -157,7 +157,7 @@ def test_post_category_amount_input_nonworking_case(mock_telebot, mocker):
     message.from_user = types.User(11, False, 'test')
     budget_update.post_category_amount_input(message, mc, "Food")
 
-    assert(budget_update.helper.throw_exception.called)
+    assert(mc.send_message.called)
 
 
 @patch('telebot.telebot')
