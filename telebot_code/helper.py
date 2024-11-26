@@ -74,6 +74,11 @@ currency_options = {
     'PLN': 'PLN'
 }
 
+scanned_expense_options = {
+    "complete": "Complete Expense",
+    "brokenUp": "Break Up Expense"
+}
+
 
 # set of implemented commands and their description
 # set of implemented commands and their description
@@ -93,7 +98,8 @@ commands = {
     'link': 'Link Telegram User with email',
     'pdf': 'Generate a PDF for Income or History',
     'email_summary': 'Send monthly summary via email',  # Add this line
-    'expense_graph': 'Generate an expense timeline graph for yourself or for your group.'
+    'expense_graph': 'Generate an expense timeline graph for yourself or for your group.',
+    'scan': "Scan a receipt (Experimental) (Currently walmart supported)"
 }
 
 
@@ -197,9 +203,11 @@ def createNewUserRecord():
 
 def getOverallBudget(userId):
     data = getUserData(userId)
+    print("Check here!!")
+    print(data)
     if data is None:
         return None
-    return data.budget['overall']
+    return data['budget']['overall']
 
 
 def getCategoryBudget(userId):
@@ -371,3 +379,6 @@ def getIncomeOrExpense():
 
 def getCurrencyOptions():
     return currency_options
+
+def getScannedExpenseOptions():
+    return scanned_expense_options

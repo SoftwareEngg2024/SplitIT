@@ -1,5 +1,10 @@
 pyTelegramBotAPI
 pytest
+pytest-cov
+mock
+imutils
+scipy
+coveralls
 jproperties
 flake8
 matplotlib
@@ -8,6 +13,10 @@ pytest-mock
 python-telegram-bot
 python-telegram-bot-calendar
 currencyapicom
+opencv-python
+pytesseract
+thefuzz
+
 
 Flask
 Flask-PyMongo

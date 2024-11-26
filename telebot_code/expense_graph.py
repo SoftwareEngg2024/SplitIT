@@ -2,10 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
-import add_group_exp.read_json as read_json
+import add_group_exp
 import db_operations
 import ast
 from telebot import types
+
+read_json = add_group_exp.read_json
 
 def run(message, bot):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)

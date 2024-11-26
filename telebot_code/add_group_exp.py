@@ -136,14 +136,15 @@ def expense_date(message, bot, category, individual_amount, date_entered, member
         # Check if the date falls within the range
         if start_date <= date_object <= end_date:
             amountval = actual_curr_val(currency, amount, formatted_date)
+            date_str, amount_str, convert_value_str, currency_str = str(formatted_date), str(amount), str(amountval), str(category)
+            write_json(add_user_expense_record(bot, user_id, "{},{},{},{},{}".format(date_str, convert_value_str, currency_str, amount_str, member_list), member_list, convert_value_str))
+            bot.send_message(chat_id, 'The following expenditure has been recorded: You have spent ${} in group expenses on {}. Actual currency is {} and value is {}\n'.format(convert_value_str, date_str, currency_str,amount_str))
+            
         else:
-            raise Exception(f"The date {formatted_date} is outside the range ({start_date} -- {end_date}).")
+            msg = bot.reply_to(message, "Try again. Select date:")
+            select_date_handler(message, bot, len(member_list), category, member_list, individual_amount)
 
-        date_str, amount_str, convert_value_str, currency_str = str(formatted_date), str(amount), str(amountval), str(category)
-        write_json(add_user_expense_record(bot, user_id, "{},{},{},{},{}".format(date_str, convert_value_str, currency_str, amount_str, member_list), member_list, convert_value_str))
-        bot.send_message(chat_id, 'The following expenditure has been recorded: You have spent ${} in group expenses on {}. Actual currency is {} and value is {}\n'.format(convert_value_str, date_str, currency_str,amount_str))
-        restart_script()
-
+        
     except Exception as e:
         error_message = f'Oh no. An error occurred:\n{e}'
         bot.reply_to(message, error_message)
@@ -159,10 +160,20 @@ def amount_validation(message, bot, total_members, category, member_list):
         total_amount = message.text
 
         if not total_amount.isnumeric() or not int(total_amount) > 0:
-            raise ValueError(f"Please enter a valid expense.")
-
-        individual_amount = float(total_amount) / (total_members + 1)
-
+            message = bot.reply_to(message, f'Invalid response. Try again. Enter the total amount spent.')
+            bot.register_next_step_handler(message, lambda msg: amount_validation(msg, bot, total_members, category, member_list))
+        else:
+            individual_amount = float(total_amount) / (total_members + 1)
+            msg = bot.reply_to(message, "Select date:")
+            select_date_handler(message, bot, total_members, category, member_list, individual_amount)
+    except Exception as e:
+        logging.exception(str(e))
+        helper.throw_exception(e, message, bot, logging)
+        restart_script()
+        
+def select_date_handler(message, bot, total_members, category, member_list, individual_amount):
+    try:
+        chat_id = message.chat.id
         calendar, step = DetailedTelegramCalendar().build()
         bot.send_message(chat_id, f"Select {LSTEP[step]}", reply_markup=calendar)
 
@@ -199,10 +210,17 @@ def currency_category(message, bot, total_members, member_list):
         category = message.text
 
         if category not in helper.getCurrencyOptions():
-            raise ValueError(f"Please enter a valid currency type.")
+            options = helper.getCurrencyOptions()
+            markup.row_width = 3
 
-        message = bot.reply_to(message, f'Enter the total amount spent.', reply_markup=markup)
-        bot.register_next_step_handler(message, lambda msg: amount_validation(msg, bot, total_members, category, member_list))
+            for c in options.values():
+                markup.add(c)
+
+            reply = bot.reply_to(message, 'Currency not found. Try again.', reply_markup=markup)
+            bot.register_next_step_handler(reply, lambda msg: currency_category(msg, bot, total_members, member_list))
+        else:
+            message = bot.reply_to(message, f'Enter the total amount spent.', reply_markup=markup)
+            bot.register_next_step_handler(message, lambda msg: amount_validation(msg, bot, total_members, category, member_list))
 
     except Exception as e:
         helper.throw_exception(e, message, bot, logging)
@@ -216,16 +234,17 @@ def members_validation(message, bot, total_members):
 
         member_list = curr_member.split(',')
         if len(member_list) != total_members:
-            raise ValueError(f"Please enter {total_members} members.")
+            message = bot.reply_to(message, f'Try again. Enter the names of members involved with you separated by comma.', reply_markup=markup)
+            bot.register_next_step_handler(message, lambda msg: members_validation(msg, bot, total_members))
+        else:
+            options = helper.getCurrencyOptions()
+            markup.row_width = 3
 
-        options = helper.getCurrencyOptions()
-        markup.row_width = 3
+            for c in options.values():
+                markup.add(c)
 
-        for c in options.values():
-            markup.add(c)
-
-        reply = bot.reply_to(message, 'Select Currency', reply_markup=markup)
-        bot.register_next_step_handler(reply, lambda msg: currency_category(msg, bot, total_members, member_list))
+            reply = bot.reply_to(message, 'Select Currency', reply_markup=markup)
+            bot.register_next_step_handler(reply, lambda msg: currency_category(msg, bot, total_members, member_list))
 
     except Exception as e:
         helper.throw_exception(e, message, bot, logging)
@@ -240,12 +259,13 @@ def post_member_selection(message, bot):
 
         if total_members_text.isnumeric() and int(total_members_text) > 0:
             total_members = int(total_members_text)
+            message = bot.reply_to(message, f'Enter the names of members involved with you separated by comma.', reply_markup=markup)
+            bot.register_next_step_handler(message, lambda msg: members_validation(msg, bot, total_members))
         else:
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise ValueError("Please enter a valid number of members.")
+            bot.send_message(chat_id, 'Invalid. Try again.')
+            bot.register_next_step_handler(message, post_member_selection, bot)
 
-        message = bot.reply_to(message, f'Enter the names of members involved with you separated by comma.', reply_markup=markup)
-        bot.register_next_step_handler(message, lambda msg: members_validation(msg, bot, total_members))
+        
     except Exception as e:
         helper.throw_exception(e, message, bot, logging)
         restart_script()

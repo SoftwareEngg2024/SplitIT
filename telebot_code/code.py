@@ -19,6 +19,7 @@ import link
 import re
 import plot_graphs
 from telebot.types import BotCommand
+import ocr_scan
 from datetime import datetime
 import expense_graph
 from jproperties import Properties
@@ -26,6 +27,7 @@ from email_utils import send_email  # Import the email utility
 from db_operations import save_user_email, get_user_email  # Import both functions
 from history import fetch_user_expenses, format_expenses  # For fetching and formatting expenses
 
+import sys
 
 configs = Properties()
 
@@ -216,6 +218,10 @@ def command_expense_graph(message):
 @bot.message_handler(commands=['link'])
 def command_add_link(message):
     link.run(message, bot)
+
+@bot.message_handler(commands=['scan'])
+def command_scan(message):
+    ocr_scan.run(message, bot)
 
 
 # not used
