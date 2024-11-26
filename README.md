@@ -8,7 +8,7 @@
 <a href="https://github.com/SoftwareEngg2024/SplitIT/actions/workflows/test_and_coverage.yaml"><img src='https://github.com/SoftwareEngg2024/SplitIT/actions/workflows/test_and_coverage.yaml/badge.svg?branch=release%2F1.1' /></a>
 <a href="https://github.com/SoftwareEngg2024/SplitIT/tree/release/1.0/docs"><img alt="Documentation Status" src="https://img.shields.io/badge/Docs-Click-green"></a>
 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green" />
- 
+<a href="https://handle.stage.datacite.org/10.5072/zenodo.137040"><img src="https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.137040.svg" alt="DOI"></a>
 </p>
 
 
