@@ -250,6 +250,8 @@ def set_bot_commands():
         BotCommand(command="/pdf", description="Generate a PDF report"),
         BotCommand(command="/link", description="Link your account"),
         BotCommand(command="/email_summary", description="Send monthly summary via email"),
+        BotCommand(command="/expense_graph", description="Send a plot of your own or your group expenses"),
+        BotCommand(command="/scan", description="Scan your expense amounts through a receipt photo"),
     ]
     bot.set_my_commands(commands)
 
