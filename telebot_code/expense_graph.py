@@ -135,7 +135,7 @@ def conv_to_df(det):
 
 def plot_expenses_with_histogram(df, granularity="day", ndays=0):
     users = df["name"].unique()
-
+    df = df.astype({'expense':'float'})
 
     Y = ndays / 365
     M = ndays / 30 - Y * 12
@@ -215,6 +215,7 @@ def plot_single_user_expenses(df, userid, granularity="day", ndays=0):
     # Plot user expenses
     print(df)
     L = len(user_data["timestamp"])
+    df = df.astype({'expense':'float'})
     total_expenses_per_day = df.groupby("timestamp")["expense"].sum().reset_index()
     print(total_expenses_per_day["expense"])
     if ndays == 0:
