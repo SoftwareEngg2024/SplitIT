@@ -12,6 +12,9 @@ import Groups from './components/Groups';
 import ExpenseManagement from './components/ExpenseManagement';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Profile from './components/Profile';
 
 
 function App() {
@@ -164,7 +167,18 @@ function App() {
               )
             }
           />
+          <Route
+            path="/profile"
+            element={
+              isAuthenticated ? (
+                <Profile/>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
         </Routes>
+        <ToastContainer />
       </Container>
     </Router>
   );
