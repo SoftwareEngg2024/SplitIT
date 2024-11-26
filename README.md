@@ -1,7 +1,14 @@
 # CSC 510 Fall '24 - Group 41
-# Pocket Track - A telegram bot for tracking expenses 
 
 # PocketTrack 💰📊  
+<a href='https://coveralls.io/github/SoftwareEngg2024/SplitIT?branch=release/1.1'><img src='https://coveralls.io/repos/github/SoftwareEngg2024/SplitIT/badge.svg?branch=release/1.1' alt='Coverage Status' /></a>
+<a href="https://github.com/SoftwareEngg2024/SplitIT/tree/release/1.0/docs"><img alt="Documentation Status" src="https://img.shields.io/badge/Docs-Click-green"></a>
+<a href="https://github.com/SoftwareEngg2024/SplitIT/actions/workflows/test_and_coverage.yaml"><img src='https://github.com/SoftwareEngg2024/SplitIT/actions/workflows/test_and_coverage.yaml/badge.svg?branch=release%2F1.1' /></a>
+<img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green" />
+
+
+
+## A telegram bot for tracking expenses 
 **PocketTrack** is a smart and interactive Telegram bot that helps you manage your expenses with ease. Whether you’re tracking daily spending, analyzing monthly trends, or keeping your budget in check, PocketTrack is your go-to financial assistant.  
 
 With new and enhanced features, PocketTrack simplifies expense management, offering a seamless and efficient user experience.  
@@ -70,7 +77,7 @@ pip install -r requirements.txt
 3. Use the connection string from Atlas to connect to DB.
    
 ### Update TOKEN in user.properties
-1. Open user.properties in your project.
+1. Open or create user.properties in your project.
 2. Update the TOKEN and MONGODB_URI with your credentials.
 
 ### Run the Telegram Bot
