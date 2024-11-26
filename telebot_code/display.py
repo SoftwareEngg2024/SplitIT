@@ -19,11 +19,16 @@ def run(message, bot):
         for mode in helper.getSpendDisplayOptions():
             markup.add(mode)
         # markup.add('Day', 'Month')
-        msg = bot.reply_to(message, 'Please select a category to see details', reply_markup=markup)
+        msg = bot.reply_to(
+            message, "Please select a category to see details", reply_markup=markup
+        )
         bot.register_next_step_handler(msg, display_total, bot)
 
-total=""
-bud=""
+
+total = ""
+bud = ""
+
+
 def display_total(message, bot):
     global total
     global bud
@@ -33,7 +38,9 @@ def display_total(message, bot):
         DayWeekMonth = message.text
 
         if DayWeekMonth not in helper.getSpendDisplayOptions():
-            raise Exception("Sorry I can't show spendings for \"{}\"!".format(DayWeekMonth))
+            raise Exception(
+                'Sorry I can\'t show spendings for "{}"!'.format(DayWeekMonth)
+            )
 
         history = helper.getUserExpenseHistory(user_id)
         if history is None:
@@ -41,7 +48,7 @@ def display_total(message, bot):
 
         bot.send_message(chat_id, "Hold on! Calculating...")
         # show the bot "typing" (max. 5 secs)
-        bot.send_chat_action(chat_id, 'typing')
+        bot.send_chat_action(chat_id, "typing")
         time.sleep(0.5)
         total_text = ""
         # get budget data
@@ -51,54 +58,74 @@ def display_total(message, bot):
         elif helper.isCategoryBudgetAvailable(user_id):
             budgetData = helper.getCategoryBudget(user_id)
 
-        if DayWeekMonth == 'Day':
+        if DayWeekMonth == "Day":
             query = datetime.now().today().strftime(helper.getDateFormat())
             # query all that contains today's date
-            queryResult = [value for index, value in enumerate(history) if str(query) in value["date"]]
-        elif DayWeekMonth == 'Month':
+            queryResult = [
+                value
+                for index, value in enumerate(history)
+                if str(query) in value["date"]
+            ]
+        elif DayWeekMonth == "Month":
             query = datetime.now().today().strftime(helper.getMonthFormat())
             # query all that contains today's date
-            queryResult = [value for index, value in enumerate(history) if str(query) in value["date"]]
+            queryResult = [
+                value
+                for index, value in enumerate(history)
+                if str(query) in value["date"]
+            ]
 
         total_text = calculate_spendings(queryResult)
-        total=total_text
-        bud=budgetData
+        total = total_text
+        bud = budgetData
         spending_text = display_budget_by_text(history, budgetData)
         if len(total_text) == 0:
-            spending_text += "----------------------\nYou have no spendings for {}!".format(DayWeekMonth)
+            spending_text += (
+                "----------------------\nYou have no spendings for {}!".format(
+                    DayWeekMonth
+                )
+            )
             bot.send_message(chat_id, spending_text)
         else:
             spending_text += "\n----------------------\nHere are your total spendings {}:\nCATEGORIES,AMOUNT \n----------------------\n{}".format(
-                DayWeekMonth.lower(), total_text)
+                DayWeekMonth.lower(), total_text
+            )
             bot.send_message(chat_id, spending_text)
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.row_width = 2
             for plot in helper.getplot():
-               markup.add(plot)
-              # markup.add('Day', 'Month')
-            msg = bot.reply_to(message, 'Please select a plot to see the total expense', reply_markup=markup)
+                markup.add(plot)
+            # markup.add('Day', 'Month')
+            msg = bot.reply_to(
+                message,
+                "Please select a plot to see the total expense",
+                reply_markup=markup,
+            )
             bot.register_next_step_handler(msg, plot_total, bot)
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, str(e))
 
+
 def plot_total(message, bot):
-     chat_id = message.chat.id
-     user_id = message.from_user.id
-     pyi=message.text
-     if pyi == 'Bar with budget':
-       
-       graphing.visualize(total,bud)
-       bot.send_photo(chat_id, photo=open('expenditure.png', 'rb'))
-       os.remove('expenditure.png')
-     elif pyi == 'Bar without budget': 
-       graphing.viz(total)
-       bot.send_photo(chat_id, photo=open('expend.png', 'rb'))
-       os.remove('expend.png')
-     else:
-       graphing.vis(total)
-       bot.send_photo(chat_id, photo=open('pie.png', 'rb'))
-       os.remove('pie.png')
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+    pyi = message.text
+    if pyi == "Bar with budget":
+
+        graphing.visualize(total, bud)
+        bot.send_photo(chat_id, photo=open("expenditure.png", "rb"))
+        os.remove("expenditure.png")
+    elif pyi == "Bar without budget":
+        graphing.viz(total)
+        bot.send_photo(chat_id, photo=open("expend.png", "rb"))
+        os.remove("expend.png")
+    else:
+        graphing.vis(total)
+        bot.send_photo(chat_id, photo=open("pie.png", "rb"))
+        os.remove("pie.png")
+
+
 def calculate_spendings(queryResult):
     total_dict = {}
 
@@ -118,10 +145,12 @@ def calculate_spendings(queryResult):
 def display_budget_by_text(history, budget_data) -> str:
     query = datetime.now().today().strftime(helper.getMonthFormat())
     # query all expense history that contains today's date
-    queryResult = [value for index, value in enumerate(history) if str(query) in value["date"]]
+    queryResult = [
+        value for index, value in enumerate(history) if str(query) in value["date"]
+    ]
     total_text = calculate_spendings(queryResult)
     budget_display = ""
-    total_text_split = [line for line in total_text.split('\n') if line.strip() != '']
+    total_text_split = [line for line in total_text.split("\n") if line.strip() != ""]
 
     if isinstance(budget_data, str):
         # if budget is string denoting it is overall budget
@@ -129,14 +158,19 @@ def display_budget_by_text(history, budget_data) -> str:
         total_expense = 0
         # sum all expense
         for expense in total_text_split:
-            a = expense.split(' ')
+            a = expense.split(" ")
             amount = a[1].replace("$", "")
             total_expense += float(amount)
         # calculate the remaining budget
         remaining = budget_val - total_expense
         # set the return message
-        budget_display += "Overall Budget is: " + str(budget_val) + "\n----------------------\nCurrent remaining budget is " + str(
-            remaining) + "\n"
+        budget_display += (
+            "Overall Budget is: "
+            + str(budget_val)
+            + "\n----------------------\nCurrent remaining budget is "
+            + str(remaining)
+            + "\n"
+        )
     elif isinstance(budget_data, dict):
         budget_display += "Budget by Catergories is:\n"
         categ_remaining = {}
@@ -147,9 +181,13 @@ def display_budget_by_text(history, budget_data) -> str:
         #  calculate the remaining budgets by categories
         for i in total_text_split:
             # the expense text is in the format like "Food $100"
-            a = i.split(' ')
+            a = i.split(" ")
             a[1] = a[1].replace("$", "")
-            categ_remaining[a[0]] = categ_remaining[a[0]] - float(a[1]) if a[0] in categ_remaining else -float(a[1])
+            categ_remaining[a[0]] = (
+                categ_remaining[a[0]] - float(a[1])
+                if a[0] in categ_remaining
+                else -float(a[1])
+            )
         budget_display += "----------------------\nCurrent remaining budget is: \n"
         # show the remaining budgets
         for key in categ_remaining.keys():

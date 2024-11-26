@@ -31,18 +31,13 @@ selectedCurr = {}
 def run(message, bot):
     chat_id = message.chat.id
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-    msg = bot.reply_to(message, 'How many members were involved other than you?', reply_markup=markup)
+    msg = bot.reply_to(
+        message, "How many members were involved other than you?", reply_markup=markup
+    )
     bot.register_next_step_handler(msg, post_member_selection, bot)
 
 
-data_format = {
-    "6619121674": {
-        "expense": [
-        ],
-        "details": {
-        }
-    }
-}
+data_format = {"6619121674": {"expense": [], "details": {}}}
 
 
 def createNewUserRecord():
@@ -51,12 +46,12 @@ def createNewUserRecord():
 
 def read_json():
     try:
-        if not os.path.exists('grp_expense_record.json'):
-            with open('grp_expense_record.json', 'w') as json_file:
-                json_file.write('{}')
-            return json.dumps('{}')
-        elif os.stat('grp_expense_record.json').st_size != 0:
-            with open('grp_expense_record.json') as expense_record:
+        if not os.path.exists("grp_expense_record.json"):
+            with open("grp_expense_record.json", "w") as json_file:
+                json_file.write("{}")
+            return json.dumps("{}")
+        elif os.stat("grp_expense_record.json").st_size != 0:
+            with open("grp_expense_record.json") as expense_record:
                 expense_record_data = json.load(expense_record)
             return expense_record_data
 
@@ -72,50 +67,54 @@ def write_json(user_list):
         # Update existing_data with new user_list
         existing_data.update(user_list)
 
-        with open('grp_expense_record.json', 'w') as json_file:
+        with open("grp_expense_record.json", "w") as json_file:
             json.dump(existing_data, json_file, ensure_ascii=False, indent=4)
     except FileNotFoundError:
-        print('Sorry, the data file could not be found.')
+        print("Sorry, the data file could not be found.")
         restart_script()
 
 
-def add_user_expense_record(bot, user_id, record_to_be_added, member_list, convert_value_str):
+def add_user_expense_record(
+    bot, user_id, record_to_be_added, member_list, convert_value_str
+):
     user_list = read_json()
     if str(user_id) not in user_list:
         user_list[str(user_id)] = createNewUserRecord()
 
     for member in member_list:
-        if not user_list[str(user_id)]['details'].get(member):
-            user_list[str(user_id)]['details'][member] = float(convert_value_str)
+        if not user_list[str(user_id)]["details"].get(member):
+            user_list[str(user_id)]["details"][member] = float(convert_value_str)
         else:
-            user_list[str(user_id)]['details'][member] += float(convert_value_str)
+            user_list[str(user_id)]["details"][member] += float(convert_value_str)
 
-    user_list[str(user_id)]['expense'].append(record_to_be_added)
+    user_list[str(user_id)]["expense"].append(record_to_be_added)
     return user_list
 
 
 def actual_curr_val(currency, amount, formatted_date):
     amount = float(amount)
-    json_file_path = './currencies.json'
+    json_file_path = "./currencies.json"
     json_data = ""
 
-    with open(json_file_path, 'r') as file:
+    with open(json_file_path, "r") as file:
         json_data = json.load(file)
 
-    last_updated_at = json_data['meta']['last_updated_at']
-    last_updated_date = date(int(last_updated_at[:4]), int(last_updated_at[5:7]), int(last_updated_at[8:10]))
+    last_updated_at = json_data["meta"]["last_updated_at"]
+    last_updated_date = date(
+        int(last_updated_at[:4]), int(last_updated_at[5:7]), int(last_updated_at[8:10])
+    )
     if str(last_updated_date) != str(formatted_date):
         print(formatted_date, last_updated_date)
         updated_json_data = update_currencies(json_file_path, json_data, formatted_date)
     else:
         print("Used the old currency data")
 
-    with open(json_file_path, 'r') as file:
+    with open(json_file_path, "r") as file:
         json_data = json.load(file)
 
-    for curr in json_data['data']:
-        if currency == json_data['data'][curr]['code']:
-            amount /= json_data['data'][curr]['value']
+    for curr in json_data["data"]:
+        if currency == json_data["data"][curr]["code"]:
+            amount /= json_data["data"][curr]["value"]
             break
     amount = round(amount, 2)
     return amount
@@ -128,25 +127,50 @@ def expense_date(message, bot, category, individual_amount, date_entered, member
         amount = individual_amount
         currency = category
 
-        formatted_date = date_entered.strftime('%Y-%m-%d')
-        date_object = datetime.strptime(formatted_date, '%Y-%m-%d')
-        start_date = datetime.strptime('1999-01-01', '%Y-%m-%d')
+        formatted_date = date_entered.strftime("%Y-%m-%d")
+        date_object = datetime.strptime(formatted_date, "%Y-%m-%d")
+        start_date = datetime.strptime("1999-01-01", "%Y-%m-%d")
         end_date = datetime.today()
 
         # Check if the date falls within the range
         if start_date <= date_object <= end_date:
             amountval = actual_curr_val(currency, amount, formatted_date)
-            date_str, amount_str, convert_value_str, currency_str = str(formatted_date), str(amount), str(amountval), str(category)
-            write_json(add_user_expense_record(bot, user_id, "{},{},{},{},{}".format(date_str, convert_value_str, currency_str, amount_str, member_list), member_list, convert_value_str))
-            bot.send_message(chat_id, 'The following expenditure has been recorded: You have spent ${} in group expenses on {}. Actual currency is {} and value is {}\n'.format(convert_value_str, date_str, currency_str,amount_str))
-            
+            date_str, amount_str, convert_value_str, currency_str = (
+                str(formatted_date),
+                str(amount),
+                str(amountval),
+                str(category),
+            )
+            write_json(
+                add_user_expense_record(
+                    bot,
+                    user_id,
+                    "{},{},{},{},{}".format(
+                        date_str,
+                        convert_value_str,
+                        currency_str,
+                        amount_str,
+                        member_list,
+                    ),
+                    member_list,
+                    convert_value_str,
+                )
+            )
+            bot.send_message(
+                chat_id,
+                "The following expenditure has been recorded: You have spent ${} in group expenses on {}. Actual currency is {} and value is {}\n".format(
+                    convert_value_str, date_str, currency_str, amount_str
+                ),
+            )
+
         else:
             msg = bot.reply_to(message, "Try again. Select date:")
-            select_date_handler(message, bot, len(member_list), category, member_list, individual_amount)
+            select_date_handler(
+                message, bot, len(member_list), category, member_list, individual_amount
+            )
 
-        
     except Exception as e:
-        error_message = f'Oh no. An error occurred:\n{e}'
+        error_message = f"Oh no. An error occurred:\n{e}"
         bot.reply_to(message, error_message)
         logging.exception(str(e))
         restart_script()
@@ -160,18 +184,30 @@ def amount_validation(message, bot, total_members, category, member_list):
         total_amount = message.text
 
         if not total_amount.isnumeric() or not int(total_amount) > 0:
-            message = bot.reply_to(message, f'Invalid response. Try again. Enter the total amount spent.')
-            bot.register_next_step_handler(message, lambda msg: amount_validation(msg, bot, total_members, category, member_list))
+            message = bot.reply_to(
+                message, f"Invalid response. Try again. Enter the total amount spent."
+            )
+            bot.register_next_step_handler(
+                message,
+                lambda msg: amount_validation(
+                    msg, bot, total_members, category, member_list
+                ),
+            )
         else:
             individual_amount = float(total_amount) / (total_members + 1)
             msg = bot.reply_to(message, "Select date:")
-            select_date_handler(message, bot, total_members, category, member_list, individual_amount)
+            select_date_handler(
+                message, bot, total_members, category, member_list, individual_amount
+            )
     except Exception as e:
         logging.exception(str(e))
         helper.throw_exception(e, message, bot, logging)
         restart_script()
-        
-def select_date_handler(message, bot, total_members, category, member_list, individual_amount):
+
+
+def select_date_handler(
+    message, bot, total_members, category, member_list, individual_amount
+):
     try:
         chat_id = message.chat.id
         calendar, step = DetailedTelegramCalendar().build()
@@ -190,13 +226,14 @@ def select_date_handler(message, bot, total_members, category, member_list, indi
                 )
             elif result:
                 print(member_list)
-                expense_date(message, bot, category, individual_amount, result, member_list)
+                expense_date(
+                    message, bot, category, individual_amount, result, member_list
+                )
                 bot.edit_message_text(
                     f"Date is set: {result}",
                     c.message.chat.id,
                     c.message.message_id,
                 )
-
 
     except Exception as e:
         logging.exception(str(e))
@@ -216,11 +253,23 @@ def currency_category(message, bot, total_members, member_list):
             for c in options.values():
                 markup.add(c)
 
-            reply = bot.reply_to(message, 'Currency not found. Try again.', reply_markup=markup)
-            bot.register_next_step_handler(reply, lambda msg: currency_category(msg, bot, total_members, member_list))
+            reply = bot.reply_to(
+                message, "Currency not found. Try again.", reply_markup=markup
+            )
+            bot.register_next_step_handler(
+                reply,
+                lambda msg: currency_category(msg, bot, total_members, member_list),
+            )
         else:
-            message = bot.reply_to(message, f'Enter the total amount spent.', reply_markup=markup)
-            bot.register_next_step_handler(message, lambda msg: amount_validation(msg, bot, total_members, category, member_list))
+            message = bot.reply_to(
+                message, f"Enter the total amount spent.", reply_markup=markup
+            )
+            bot.register_next_step_handler(
+                message,
+                lambda msg: amount_validation(
+                    msg, bot, total_members, category, member_list
+                ),
+            )
 
     except Exception as e:
         helper.throw_exception(e, message, bot, logging)
@@ -232,10 +281,16 @@ def members_validation(message, bot, total_members):
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         curr_member = message.text
 
-        member_list = curr_member.split(',')
+        member_list = curr_member.split(",")
         if len(member_list) != total_members:
-            message = bot.reply_to(message, f'Try again. Enter the names of members involved with you separated by comma.', reply_markup=markup)
-            bot.register_next_step_handler(message, lambda msg: members_validation(msg, bot, total_members))
+            message = bot.reply_to(
+                message,
+                f"Try again. Enter the names of members involved with you separated by comma.",
+                reply_markup=markup,
+            )
+            bot.register_next_step_handler(
+                message, lambda msg: members_validation(msg, bot, total_members)
+            )
         else:
             options = helper.getCurrencyOptions()
             markup.row_width = 3
@@ -243,8 +298,11 @@ def members_validation(message, bot, total_members):
             for c in options.values():
                 markup.add(c)
 
-            reply = bot.reply_to(message, 'Select Currency', reply_markup=markup)
-            bot.register_next_step_handler(reply, lambda msg: currency_category(msg, bot, total_members, member_list))
+            reply = bot.reply_to(message, "Select Currency", reply_markup=markup)
+            bot.register_next_step_handler(
+                reply,
+                lambda msg: currency_category(msg, bot, total_members, member_list),
+            )
 
     except Exception as e:
         helper.throw_exception(e, message, bot, logging)
@@ -259,13 +317,18 @@ def post_member_selection(message, bot):
 
         if total_members_text.isnumeric() and int(total_members_text) > 0:
             total_members = int(total_members_text)
-            message = bot.reply_to(message, f'Enter the names of members involved with you separated by comma.', reply_markup=markup)
-            bot.register_next_step_handler(message, lambda msg: members_validation(msg, bot, total_members))
+            message = bot.reply_to(
+                message,
+                f"Enter the names of members involved with you separated by comma.",
+                reply_markup=markup,
+            )
+            bot.register_next_step_handler(
+                message, lambda msg: members_validation(msg, bot, total_members)
+            )
         else:
-            bot.send_message(chat_id, 'Invalid. Try again.')
+            bot.send_message(chat_id, "Invalid. Try again.")
             bot.register_next_step_handler(message, post_member_selection, bot)
 
-        
     except Exception as e:
         helper.throw_exception(e, message, bot, logging)
         restart_script()

@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import Mock
 
+
 def test_email_string_concat():
     """Test that email subject and body concatenate correctly."""
     subject = "Test Subject"
@@ -52,9 +53,7 @@ def test_email_summary_creation():
 
     summary = create_summary(recipient, subject, body)
     expected_summary = (
-        "To: test@example.com\n"
-        "Subject: Test Subject\n"
-        "Body: This is a test body."
+        "To: test@example.com\n" "Subject: Test Subject\n" "Body: This is a test body."
     )
 
     assert summary == expected_summary

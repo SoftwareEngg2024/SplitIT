@@ -2,6 +2,7 @@ import helper
 import db_operations
 from db_operations import *
 
+
 def run(message, bot):
     global user_list
     chat_id = message.chat.id
@@ -18,6 +19,6 @@ def run(message, bot):
 # function to delete a record
 def deleteHistory(user_id):
     global user_list
-    if (str(user_id) in user_list):
+    if str(user_id) in user_list:
         del user_list[str(user_id)]
     return user_list

@@ -4,10 +4,11 @@ import json
 from datetime import datetime
 from telebot_code import currency_api
 
+
 class TestCurrencyUpdate(unittest.TestCase):
 
-    @patch('currencyapicom.Client')
-    @patch('builtins.open')
+    @patch("currencyapicom.Client")
+    @patch("builtins.open")
     def test_update_currencies(self, mock_open, mock_client):
         # Mock the data
         mock_data = {
@@ -34,7 +35,9 @@ class TestCurrencyUpdate(unittest.TestCase):
                 "ZAR": {"code": "ZAR", "value": 15.52537},
             },
         }
-        mock_open.return_value.__enter__.return_value.read.return_value = json.dumps(mock_data)
+        mock_open.return_value.__enter__.return_value.read.return_value = json.dumps(
+            mock_data
+        )
 
         # Mock the Currency API client
         mock_currency_api = Mock()
@@ -65,27 +68,34 @@ class TestCurrencyUpdate(unittest.TestCase):
         mock_client.return_value = mock_currency_api
 
         # Run the function
-        updated_data = currency_api.update_currencies('./currencies.json', mock_data, '2022-01-12')
+        updated_data = currency_api.update_currencies(
+            "./currencies.json", mock_data, "2022-01-12"
+        )
 
         # Assertions
-        self.assertEqual(updated_data["meta"]["last_updated_at"], "2022-01-12T23:59:59Z")
+        self.assertEqual(
+            updated_data["meta"]["last_updated_at"], "2022-01-12T23:59:59Z"
+        )
         # Include assertions for all currencies
 
         # Ensure that the update_json_file function was called
-        mock_open.assert_called_with('./currencies.json', 'w')
+        mock_open.assert_called_with("./currencies.json", "w")
         mock_open.return_value.__enter__.return_value.write.assert_called()
 
-    @patch('builtins.open')
+    @patch("builtins.open")
     def test_update_json_file(self, mock_open):
         # Mock the data
         data = {"key": "value"}
 
         # Run the function
-        currency_api.update_json_file('./file.json', data)
+        currency_api.update_json_file("./file.json", data)
 
         # Ensure that the open and write functions were called
-        mock_open.assert_called_with('./file.json', 'w')
-        mock_open.return_value.__enter__.return_value.write.assert_called_with(json.dumps(data, indent=4))
+        mock_open.assert_called_with("./file.json", "w")
+        mock_open.return_value.__enter__.return_value.write.assert_called_with(
+            json.dumps(data, indent=4)
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

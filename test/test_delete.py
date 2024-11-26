@@ -7,12 +7,12 @@ from telebot import types
 
 def test_read_json():
     try:
-        if not os.path.exists('./test/dummy_expense_record.json'):
-            with open('./test/dummy_expense_record.json', 'w') as json_file:
-                json_file.write('{}')
-            return json.dumps('{}')
-        elif os.stat('./test/dummy_expense_record.json').st_size != 0:
-            with open('./test/dummy_expense_record.json') as expense_record:
+        if not os.path.exists("./test/dummy_expense_record.json"):
+            with open("./test/dummy_expense_record.json", "w") as json_file:
+                json_file.write("{}")
+            return json.dumps("{}")
+        elif os.stat("./test/dummy_expense_record.json").st_size != 0:
+            with open("./test/dummy_expense_record.json") as expense_record:
                 expense_record_data = json.load(expense_record)
             return expense_record_data
 
@@ -21,29 +21,29 @@ def test_read_json():
 
 
 def create_message(text):
-    params = {'messagebody': text}
-    chat = types.User("894127939", False, 'test')
-    return types.Message(1, None, None, chat, 'text', params, "")
+    params = {"messagebody": text}
+    chat = types.User("894127939", False, "test")
+    return types.Message(1, None, None, chat, "text", params, "")
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_delete_run_with_data(mock_telebot, mocker):
     MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(delete, 'db_operations')
+    mocker.patch.object(delete, "db_operations")
     delete.db_operations.read_user_transaction.return_value = MOCK_USER_DATA
     print("Hello", MOCK_USER_DATA)
-    
+
     MOCK_Message_data = create_message("Hello")
-    MOCK_Message_data.from_user = types.User(11, False, 'test')
+    MOCK_Message_data.from_user = types.User(11, False, "test")
     mc = mock_telebot.return_value
     mc.send_message.return_value = True
     delete.run(MOCK_Message_data, mc)
-    assert(delete.db_operations.delete_user_transaction.called)
+    assert delete.db_operations.delete_user_transaction.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_delete_with_no_data(mock_telebot, mocker):
-    mocker.patch.object(delete, 'helper')
+    mocker.patch.object(delete, "helper")
     delete.helper.read_json.return_value = {}
     delete.helper.write_json.return_value = True
     MOCK_Message_data = create_message("Hello")

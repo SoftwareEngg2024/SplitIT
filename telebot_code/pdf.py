@@ -3,21 +3,23 @@ import logging
 from telebot import types
 from matplotlib import pyplot as plt
 
+
 def run(message, bot):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     options = helper.getIncomeOrExpense()
     markup.row_width = 2
     for c in options.values():
         markup.add(c)
-    msg = bot.reply_to(message, 'Select Income or Expense', reply_markup=markup)
+    msg = bot.reply_to(message, "Select Income or Expense", reply_markup=markup)
     bot.register_next_step_handler(msg, post_type_selection, bot)
+
 
 def post_type_selection(message, bot):
     try:
         chat_id = message.chat.id
         selectedType = message.text
         user_history = helper.getUserHistory(chat_id, selectedType)
-        message = "Alright. I just created a pdf of your "+ selectedType+ "history!"
+        message = "Alright. I just created a pdf of your " + selectedType + "history!"
         bot.send_message(chat_id, message)
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)

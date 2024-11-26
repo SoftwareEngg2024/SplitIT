@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from db_operations import *
 
+
 def grp_exp_plot():
-    plt.title('Expense Details')
+    plt.title("Expense Details")
 
     # Read JSON data from file
-    with open('./grp_expense_record.json', 'r') as file:
+    with open("./grp_expense_record.json", "r") as file:
         json_data = file.read()
 
     # Load JSON data
@@ -21,11 +22,11 @@ def grp_exp_plot():
     values = list(details.values())
 
     plt.bar(names, values)
-    plt.xlabel('Names')
-    plt.ylabel('Values')
+    plt.xlabel("Names")
+    plt.ylabel("Values")
 
     # Saves the figure as a PNG image
-    plt.savefig('./graphs/grp_expense_chart.pdf')
+    plt.savefig("./graphs/grp_expense_chart.pdf")
 
     # plt.show()
 
@@ -42,9 +43,9 @@ def income_plot(user_id):
         plt.cla()
         plt.close()
     else:
-    # Extract income data
+        # Extract income data
         income_data = data.transactions["income_data"]
-    
+
         # Create a dictionary to store income per category
         income_per_category = {}
 
@@ -53,10 +54,15 @@ def income_plot(user_id):
         for entry in income_data:
             amount = float(entry["amount"])
             total_income += amount
-            income_per_category[entry["category"]] = income_per_category.get(entry["category"], 0.0) + amount
+            income_per_category[entry["category"]] = (
+                income_per_category.get(entry["category"], 0.0) + amount
+            )
 
         # Calculate percentages and actual values
-        percentages = [(category, income / total_income * 100) for category, income in income_per_category.items()]
+        percentages = [
+            (category, income / total_income * 100)
+            for category, income in income_per_category.items()
+        ]
 
         # Create a pie chart
         labels, values = zip(*percentages)
@@ -65,19 +71,33 @@ def income_plot(user_id):
         # Create a function to format the autopct
         def autopct_format_income(pct):
             values_array = np.array(values)
-            close_values = np.isclose(pct / 100 * total_income, values_array, rtol=1e-05, atol=1e-08)
+            close_values = np.isclose(
+                pct / 100 * total_income, values_array, rtol=1e-05, atol=1e-08
+            )
 
             # Check if any values are close to the calculated value
             if any(close_values):
                 idx = np.where(close_values)[0][0]
-                return f'{pct:.1f}% ({income_per_category[labels[idx]]:.2f})' if income_per_category[labels[idx]] > 0 else f'{pct:.1f}%'
+                return (
+                    f"{pct:.1f}% ({income_per_category[labels[idx]]:.2f})"
+                    if income_per_category[labels[idx]] > 0
+                    else f"{pct:.1f}%"
+                )
 
-            return f'{pct:.1f}%' if total_income > 0 else 'No income data'
+            return f"{pct:.1f}%" if total_income > 0 else "No income data"
 
-        plt.pie(values, labels=labels, autopct=autopct_format_income, startangle=140, explode=explode)
-        plt.axis('equal')  # Equal aspect ratio ensures that the pie chart is drawn as a circle.
-        plt.title('Income Distribution by Category')
-        plt.savefig('./graphs/income_chart.pdf')
+        plt.pie(
+            values,
+            labels=labels,
+            autopct=autopct_format_income,
+            startangle=140,
+            explode=explode,
+        )
+        plt.axis(
+            "equal"
+        )  # Equal aspect ratio ensures that the pie chart is drawn as a circle.
+        plt.title("Income Distribution by Category")
+        plt.savefig("./graphs/income_chart.pdf")
         # plt.show()
 
         # clean the plot to avoid the old data remains on it
@@ -93,9 +113,9 @@ def expense_plot(user_id):
         plt.cla()
         plt.close()
     else:
-    # Extract Expense data
+        # Extract Expense data
         expense_data = data.transactions["expense_data"]
-        
+
         # Create a dictionary to store Expense per category
         expense_per_category = {}
 
@@ -104,10 +124,15 @@ def expense_plot(user_id):
         for entry in expense_data:
             amount = float(entry["amount"])
             total_expense += amount
-            expense_per_category[entry["category"]] = expense_per_category.get(entry["category"], 0.0) + amount
+            expense_per_category[entry["category"]] = (
+                expense_per_category.get(entry["category"], 0.0) + amount
+            )
 
         # Calculate percentages and actual values
-        percentages = [(category, expense / total_expense * 100) for category, expense in expense_per_category.items()]
+        percentages = [
+            (category, expense / total_expense * 100)
+            for category, expense in expense_per_category.items()
+        ]
 
         # Create a pie chart
         labels, values = zip(*percentages)
@@ -116,19 +141,33 @@ def expense_plot(user_id):
         # Create a function to format the autopct
         def autopct_format_expense(pct):
             values_array = np.array(values)
-            close_values = np.isclose(pct / 100 * total_expense, values_array, rtol=1e-05, atol=1e-08)
+            close_values = np.isclose(
+                pct / 100 * total_expense, values_array, rtol=1e-05, atol=1e-08
+            )
 
             # Check if any values are close to the calculated value
             if any(close_values):
                 idx = np.where(close_values)[0][0]
-                return f'{pct:.1f}% ({expense_per_category[labels[idx]]:.2f})' if expense_per_category[labels[idx]] > 0 else f'{pct:.1f}%'
+                return (
+                    f"{pct:.1f}% ({expense_per_category[labels[idx]]:.2f})"
+                    if expense_per_category[labels[idx]] > 0
+                    else f"{pct:.1f}%"
+                )
 
-            return f'{pct:.1f}%' if total_expense > 0 else 'No expense data'
+            return f"{pct:.1f}%" if total_expense > 0 else "No expense data"
 
-        plt.pie(values, labels=labels, autopct=autopct_format_expense, startangle=140, explode=explode)
-        plt.axis('equal')  # Equal aspect ratio ensures that the pie chart is drawn as a circle.
-        plt.title('Expense Distribution by Category')
-        plt.savefig('./graphs/expense_chart.pdf')
+        plt.pie(
+            values,
+            labels=labels,
+            autopct=autopct_format_expense,
+            startangle=140,
+            explode=explode,
+        )
+        plt.axis(
+            "equal"
+        )  # Equal aspect ratio ensures that the pie chart is drawn as a circle.
+        plt.title("Expense Distribution by Category")
+        plt.savefig("./graphs/expense_chart.pdf")
         # plt.show()
 
         # clean the plot to avoid the old data remains on it

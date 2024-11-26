@@ -1,5 +1,6 @@
 import helper
-from db_operations import * 
+from db_operations import *
+
 
 def run(message, bot):
     chat_id = message.chat.id
@@ -13,4 +14,4 @@ def run(message, bot):
         userTransaction.budget["category"] = {}
         update_user_transaction(user_id, userTransaction.to_dict())
 
-    bot.send_message(chat_id, 'Budget deleted!')
+    bot.send_message(chat_id, "Budget deleted!")

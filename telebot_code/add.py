@@ -23,7 +23,7 @@ def run(message, bot):
     markup.row_width = 2
     for c in options.values():
         markup.add(c)
-    msg = bot.reply_to(message, 'Select Income or Expense', reply_markup=markup)
+    msg = bot.reply_to(message, "Select Income or Expense", reply_markup=markup)
     bot.register_next_step_handler(msg, post_type_selection, bot, "", 0)
 
 
@@ -36,7 +36,7 @@ def post_type_selection(message, bot, type, retry):
             user_id = message.from_user.id
             selectedType = message.text
         if not selectedType in helper.getIncomeOrExpense():
-            bot.send_message(message.chat.id, 'Select Income or Expense')
+            bot.send_message(message.chat.id, "Select Income or Expense")
             bot.register_next_step_handler(message, run, bot)
         else:
             if selectedType == "Income":
@@ -45,10 +45,12 @@ def post_type_selection(message, bot, type, retry):
             elif selectedType == "Expense":
                 for c in helper.getSpendCategories():
                     markup.add(c)
-            
-            msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
+
+            msg = bot.reply_to(message, "Select Category", reply_markup=markup)
             selectedTyp[user_id] = selectedType
-            bot.register_next_step_handler(msg, post_category_selection, bot, selectedType)
+            bot.register_next_step_handler(
+                msg, post_category_selection, bot, selectedType
+            )
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)
@@ -64,15 +66,17 @@ def post_category_selection(message, bot, selectedType):
         else:
             categories = helper.getSpendCategories()
         if selected_category not in categories:
-            bot.send_message(chat_id, 'Try Again.')
+            bot.send_message(chat_id, "Try Again.")
             if selectedType == "Income":
                 for c in helper.getIncomeCategories():
                     markup.add(c)
             else:
                 for c in helper.getSpendCategories():
                     markup.add(c)
-            msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
-            bot.register_next_step_handler(msg, post_category_selection, bot, selectedType)
+            msg = bot.reply_to(message, "Select Category", reply_markup=markup)
+            bot.register_next_step_handler(
+                msg, post_category_selection, bot, selectedType
+            )
         else:
             selectedCat[user_id] = selected_category
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -80,11 +84,13 @@ def post_category_selection(message, bot, selectedType):
             markup.row_width = 3
             for c in options.values():
                 markup.add(c)
-            msg = bot.reply_to(message, 'Select Currency', reply_markup=markup)
-            bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
+            msg = bot.reply_to(message, "Select Currency", reply_markup=markup)
+            bot.register_next_step_handler(
+                message, post_currency_selection, bot, selected_category
+            )
     except Exception as e:
         logging.exception(str(e))
-        bot.reply_to(message, 'Oh no. ' + str(e))
+        bot.reply_to(message, "Oh no. " + str(e))
 
 
 def post_currency_selection(message, bot, selected_category):
@@ -100,15 +106,31 @@ def post_currency_selection(message, bot, selected_category):
             markup.row_width = 3
             for c in options.values():
                 markup.add(c)
-            msg = bot.reply_to(message, 'Try again. Select Currency', reply_markup=markup)
-            bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
+            msg = bot.reply_to(
+                message, "Try again. Select Currency", reply_markup=markup
+            )
+            bot.register_next_step_handler(
+                message, post_currency_selection, bot, selected_category
+            )
         else:
             selectedCurr[user_id] = selectedCurrency
-            if str(selectedTyp[user_id]) == "Income" :
-                message = bot.send_message(chat_id, 'How much did you receive through {}? \n(Enter numeric values only)'.format(str(selected_category)))
+            if str(selectedTyp[user_id]) == "Income":
+                message = bot.send_message(
+                    chat_id,
+                    "How much did you receive through {}? \n(Enter numeric values only)".format(
+                        str(selected_category)
+                    ),
+                )
             else:
-                message = bot.send_message(chat_id, 'How much did you spend on {}? \n(Enter numeric values only)'.format(str(selected_category)))
-            bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
+                message = bot.send_message(
+                    chat_id,
+                    "How much did you spend on {}? \n(Enter numeric values only)".format(
+                        str(selected_category)
+                    ),
+                )
+            bot.register_next_step_handler(
+                message, post_amount_input, bot, selectedCurrency
+            )
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)
@@ -122,18 +144,25 @@ def post_amount_input(message, bot, selectedCurrency):
         amount_value = helper.validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
             message = bot.send_message(chat_id, "Try again with a non zero value.")
-            bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
+            bot.register_next_step_handler(
+                message, post_amount_input, bot, selectedCurrency
+            )
         else:
-            selectedAm[user_id] = amount_value   
+            selectedAm[user_id] = amount_value
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.add("Custom")
             markup.add("Today")
 
-            msg = bot.reply_to(message, "Do you want to enter today's date or a custom date?", reply_markup=markup)
+            msg = bot.reply_to(
+                message,
+                "Do you want to enter today's date or a custom date?",
+                reply_markup=markup,
+            )
             bot.register_next_step_handler(msg, post_date_choice_input, bot)
     except Exception as e:
         logging.exception(str(e))
-        bot.reply_to(message, 'Oh no. ' + str(e))
+        bot.reply_to(message, "Oh no. " + str(e))
+
 
 def post_date_choice_input(message, bot):
     try:
@@ -144,8 +173,7 @@ def post_date_choice_input(message, bot):
             user_id = message.from_user.id
             calendar, step = DetailedTelegramCalendar().build()
             bot.send_message(chat_id, f"Select {LSTEP[step]}", reply_markup=calendar)
-            
-        
+
             @bot.callback_query_handler(func=DetailedTelegramCalendar.func())
             def cal(c):
                 result, key, step = DetailedTelegramCalendar().process(c.data)
@@ -158,29 +186,33 @@ def post_date_choice_input(message, bot):
                         reply_markup=key,
                     )
                 elif result:
-                    post_date_input(message,bot, result)
+                    post_date_input(message, bot, result)
                     bot.edit_message_text(
                         f"Date is set: {result}",
                         c.message.chat.id,
                         c.message.message_id,
                     )
+
     except Exception as e:
         logging.exception(str(e))
-        bot.reply_to(message, 'Oh no. ' + str(e))
+        bot.reply_to(message, "Oh no. " + str(e))
+
 
 #########################################################
 
 
 def actual_curr_val(currency, amount, formatted_date):
     amount = float(amount)
-    json_file_path = './currencies.json'
+    json_file_path = "./currencies.json"
     json_data = ""
 
-    with open(json_file_path, 'r') as file:
+    with open(json_file_path, "r") as file:
         json_data = json.load(file)
 
-    last_updated_at = json_data['meta']['last_updated_at']
-    last_updated_date = date(int(last_updated_at[:4]), int(last_updated_at[5:7]), int(last_updated_at[8:10]))
+    last_updated_at = json_data["meta"]["last_updated_at"]
+    last_updated_date = date(
+        int(last_updated_at[:4]), int(last_updated_at[5:7]), int(last_updated_at[8:10])
+    )
     if str(last_updated_date) != str(formatted_date):
         print(formatted_date, last_updated_date)
         updated_json_data = update_currencies(json_file_path, json_data, formatted_date)
@@ -188,15 +220,17 @@ def actual_curr_val(currency, amount, formatted_date):
     else:
         print("Used the old currency data")
 
-    with open(json_file_path, 'r') as file:
+    with open(json_file_path, "r") as file:
         json_data = json.load(file)
 
-    for curr in json_data['data']:
-        if currency == json_data['data'][curr]['code']:
-            amount /= json_data['data'][curr]['value']
+    for curr in json_data["data"]:
+        if currency == json_data["data"][curr]["code"]:
+            amount /= json_data["data"][curr]["value"]
             break
     amount = round(amount, 2)
     return amount
+
+
 ################################################################
 
 
@@ -209,10 +243,10 @@ def post_date_input(message, bot, date_entered):
 
         ####################################################
 
-        formatted_date = date_entered.strftime('%Y-%m-%d')
-        date_object = datetime.strptime(formatted_date, '%Y-%m-%d')
-        start_date = datetime.strptime('1999-01-01', '%Y-%m-%d')
-        end_date = datetime.today() + + timedelta(days=7)
+        formatted_date = date_entered.strftime("%Y-%m-%d")
+        date_object = datetime.strptime(formatted_date, "%Y-%m-%d")
+        start_date = datetime.strptime("1999-01-01", "%Y-%m-%d")
+        end_date = datetime.today() + +timedelta(days=7)
 
         # Check if the date falls within the range
         if start_date <= date_object <= end_date:
@@ -221,8 +255,12 @@ def post_date_input(message, bot, date_entered):
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             markup.add("Custom")
             markup.add("Today")
-            
-            msg = bot.reply_to(message, "Try again. Do you want to enter today's date or a custom date?", reply_markup=markup)
+
+            msg = bot.reply_to(
+                message,
+                "Try again. Do you want to enter today's date or a custom date?",
+                reply_markup=markup,
+            )
             bot.register_next_step_handler(msg, post_date_choice_input, bot)
 
         # if currency == 'Euro':
@@ -234,25 +272,50 @@ def post_date_input(message, bot, date_entered):
         # amountval = round(actual_value, 2)
 
         ######################################################
-        date_str, category_str, amount_str, convert_value_str, currency_str = str(formatted_date), str(selectedCat[user_id]), str(amount), str(amountval), str(selectedCurr[user_id])
-        if str(selectedTyp[user_id])=="Income":
-            expenseRecord = ExpenseRecord(title="Income", date=date_str, category=category_str, amount=amount_str, currency=currency_str, amountUSD=convert_value_str)
-            add_user_income_record(bot,user_id, expenseRecord.to_dict())
+        date_str, category_str, amount_str, convert_value_str, currency_str = (
+            str(formatted_date),
+            str(selectedCat[user_id]),
+            str(amount),
+            str(amountval),
+            str(selectedCurr[user_id]),
+        )
+        if str(selectedTyp[user_id]) == "Income":
+            expenseRecord = ExpenseRecord(
+                title="Income",
+                date=date_str,
+                category=category_str,
+                amount=amount_str,
+                currency=currency_str,
+                amountUSD=convert_value_str,
+            )
+            add_user_income_record(bot, user_id, expenseRecord.to_dict())
         else:
-            expenseRecord = ExpenseRecord(title="Expense", date=date_str, category=category_str, amount=amount_str, currency=currency_str, amountUSD=convert_value_str)
-            add_user_expense_record(bot,user_id, expenseRecord.to_dict())
-        bot.send_message(chat_id, 'The following expenditure has been recorded: You have spent/received ${} for {} on {}. Actual currency is {} and value is {}\n'.format(convert_value_str, category_str, date_str, currency_str,amount_str))
+            expenseRecord = ExpenseRecord(
+                title="Expense",
+                date=date_str,
+                category=category_str,
+                amount=amount_str,
+                currency=currency_str,
+                amountUSD=convert_value_str,
+            )
+            add_user_expense_record(bot, user_id, expenseRecord.to_dict())
+        bot.send_message(
+            chat_id,
+            "The following expenditure has been recorded: You have spent/received ${} for {} on {}. Actual currency is {} and value is {}\n".format(
+                convert_value_str, category_str, date_str, currency_str, amount_str
+            ),
+        )
         helper.display_remaining_budget(message, bot, selectedCat[user_id])
 
     ####################################################
     except Exception as e:
-        error_message = f'Oh no. An error occurred:\n{e}'
+        error_message = f"Oh no. An error occurred:\n{e}"
         bot.reply_to(message, error_message)
         logging.exception(str(e))
     ####################################################
 
 
-def add_user_expense_record(bot,user_id, record_to_be_added):
+def add_user_expense_record(bot, user_id, record_to_be_added):
     userTransaction = read_user_transaction(user_id)
 
     if userTransaction == None:
@@ -266,7 +329,7 @@ def add_user_expense_record(bot,user_id, record_to_be_added):
     return userTransaction
 
 
-def add_user_income_record(bot,user_id, record_to_be_added):
+def add_user_income_record(bot, user_id, record_to_be_added):
     userTransaction = read_user_transaction(user_id)
 
     if userTransaction == None:
