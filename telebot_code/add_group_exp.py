@@ -46,7 +46,7 @@ data_format = {
 
 
 def createNewUserRecord():
-    return data_format
+    return data_format["6619121674"].copy()
 
 
 def read_json():

@@ -18,6 +18,7 @@ import pdf
 import link
 import plot_graphs
 from datetime import datetime
+import expense_graph
 from jproperties import Properties
 
 configs = Properties()
@@ -131,6 +132,10 @@ def command_category(message):
 @bot.message_handler(commands=['pdf'])
 def command_category(message):
     pdf.run(message, bot)
+
+@bot.message_handler(commands=['expense_graph'])
+def command_expense_graph(message):
+    expense_graph.run(message, bot)
 
 # function to link user
 @bot.message_handler(commands=['link'])
