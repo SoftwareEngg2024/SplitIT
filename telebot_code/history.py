@@ -3,6 +3,13 @@ import logging
 import matplotlib.pyplot as plt
 from datetime import datetime
 from telebot import types
+from pymongo import MongoClient
+from bson import ObjectId
+import db_operations
+
+# client = MongoClient('mongodb+srv://rajkalantri:rajkalantri123@cluster0.9eruo.mongodb.net/')  # Replace with your MongoDB connection string
+# db = client['Expenses']  # Replace with your database name
+# users_collection = db['overallexpenses']  # Replace with your collection name that stores user data
 
 def run(message, bot):
     try:
@@ -153,3 +160,31 @@ def post_type_selection(message, bot):
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)
+
+def fetch_user_expenses(user_id):
+    """Fetch user expenses from the database."""
+    transaction = db_operations.read_user_transaction(user_id)
+    expenses = transaction.transactions["expense_data"]
+    if expenses is None:
+        L = []
+    else:
+        L = []
+        for E in expenses:
+            L.append({"category" : E["category"], "amount":E["amountUSD"], "date": E["date"]})
+
+    # Dummy implementation; replace with actual database query
+    # db
+    return L
+    # return [
+    #     {"category": "Food", "amount": 20, "date": "2024-11-01"},
+    #     {"category": "Transport", "amount": 15, "date": "2024-11-02"}
+    # ]
+
+def format_expenses(expenses):
+    """Format expenses for display or email."""
+    if not expenses:
+        return "No expenditures recorded this month."
+    summary = "Your Monthly Expenditures:\n\n"
+    for expense in expenses:
+        summary += f"Category: {expense['category']}, Amount: {expense['amount']}, Date: {expense['date']}\n"
+    return summary
