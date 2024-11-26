@@ -94,7 +94,7 @@ commands = {
 }
 
 
-dateFormat = "%d-%b-%y"
+dateFormat = "%Y-%m-%d"
 timeFormat = "%H:%M"
 monthFormat = "%Y-%m"
 
@@ -201,7 +201,7 @@ def getOverallBudget(userId):
     print(data)
     if data is None:
         return None
-    return data["budget"]["overall"]
+    return data.budget["overall"]
 
 
 def getCategoryBudget(userId):

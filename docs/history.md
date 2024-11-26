@@ -2,7 +2,7 @@
 This feature enables the user to view all of their stored records i.e it gives a historical view of all the expenses stored in MyExpenseBot.
 
 # Location of Code for this Feature
-The code that implements this feature can be found [here](https://github.com/nainisha-b/MyExpenseBot/blob/main/code/history.py)
+The code that implements this feature can be found [here](github.com/SoftwareEngg2024/SplitIT/blob/release/1.1/telebot_code/history.py)
 
 # Code Description
 ## Functions

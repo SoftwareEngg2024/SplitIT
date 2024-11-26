@@ -21,7 +21,7 @@ The user can choose a category from the income or expense set and add the amount
 
 ## Location of Code for this Feature
 
-The code that implements this feature can be found [here](https://github.com/nainisha-b/MyExpenseBot/blob/main/code/add.py).
+The code that implements this feature can be found [here](github.com/SoftwareEngg2024/SplitIT/blob/release/1.1/telebot_code/add.py).
 
 ## Code Description
 

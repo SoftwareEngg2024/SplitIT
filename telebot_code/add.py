@@ -35,7 +35,7 @@ def post_type_selection(message, bot, type, retry):
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             user_id = message.from_user.id
             selectedType = message.text
-        if not selectedType in helper.getIncomeOrExpense():
+        if not selectedType in helper.getIncomeOrExpense().values():
             bot.send_message(message.chat.id, "Select Income or Expense")
             bot.register_next_step_handler(message, run, bot)
         else:
@@ -214,7 +214,9 @@ def actual_curr_val(currency, amount, formatted_date):
         int(last_updated_at[:4]), int(last_updated_at[5:7]), int(last_updated_at[8:10])
     )
     if str(last_updated_date) != str(formatted_date):
-        print(formatted_date, last_updated_date)
+        D = date.today()
+        if formatted_date == str(D):
+            formatted_date = str(date(D.year, D.month, D.day - 1))
         updated_json_data = update_currencies(json_file_path, json_data, formatted_date)
         # print(updated_json_data)
     else:

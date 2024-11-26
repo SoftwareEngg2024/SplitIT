@@ -2,7 +2,7 @@
 This feature enables the user to edit a previously entered expense in the app. The use can change the amount set in the bot with this command. 
 
 # Location of Code for this Feature
-The code that implements this feature can be found [here](https://github.com/nainisha-b/MyExpenseBot/blob/main/code/edit.py)
+The code that implements this feature can be found [here](github.com/SoftwareEngg2024/SplitIT/blob/release/1.1/telebot_code/edit.py)
 
 # Code Description
 ## Functions

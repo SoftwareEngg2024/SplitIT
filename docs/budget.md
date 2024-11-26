@@ -4,7 +4,7 @@ This feature enables the user to add, remove, edit or display a budget in their 
 The user can choose a category and add the amount for the budget to be stored in the expense tracker.
 
 # Location of Code for this Feature
-The code that implements this feature can be found [here](https://github.com/nainisha-b/MyExpenseBot/blob/main/code/budget.py)
+The code that implements this feature can be found [here](github.com/SoftwareEngg2024/SplitIT/blob/release/1.1/telebot_code/budget.py)
 
 # Code Description
 ## Functions

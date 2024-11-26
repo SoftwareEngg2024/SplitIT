@@ -1,5 +1,7 @@
 import pandas as pd
+
 import matplotlib.pyplot as plt
+
 import matplotlib.dates as mdates
 from datetime import datetime
 import add_group_exp
@@ -137,7 +139,11 @@ def conv_to_df(det):
 
 def plot_expenses_with_histogram(df, granularity="day", ndays=0):
     users = df["name"].unique()
-    plt.clf()
+
+
+    Y = ndays / 365
+    M = ndays / 30 - Y * 12
+    D = ndays - 30 * M
 
     fig, ax1 = plt.subplots(figsize=(12, 6))
     for user in users:
@@ -148,8 +154,8 @@ def plot_expenses_with_histogram(df, granularity="day", ndays=0):
         l = L - ndays
 
         ax1.plot(
-            pd.to_datetime(user_data["timestamp"][l:]),
-            user_data["expense"][l:],
+            pd.to_datetime(user_data["timestamp"]),
+            user_data["expense"],
             label=user,
             marker="o",
         )
@@ -170,7 +176,7 @@ def plot_expenses_with_histogram(df, granularity="day", ndays=0):
     total_expenses_per_day = df.groupby("timestamp")["expense"].sum().reset_index()
 
     bars = ax2.bar(
-        pd.to_datetime(total_expenses_per_day["timestamp"]),
+        pd.to_datetime(total_expenses_per_day.iloc["timestamp"]),
         total_expenses_per_day["expense"],
         alpha=0.2,
         color="gray",
@@ -193,12 +199,14 @@ def plot_expenses_with_histogram(df, granularity="day", ndays=0):
     ax1.legend(loc="upper left")
     plt.title(f"Expenses ({granularity.capitalize()}wise) per User with Total Expenses")
     plt.savefig("temp.png")
+    plt.close()
     return open("temp.png", "rb")
 
 
 def plot_single_user_expenses(df, userid, granularity="day", ndays=0):
-    plt.clf()
+    
     # Filter data for the specified user
+    
     user_data = df[df["userid"] == userid]
 
     if user_data.empty:
@@ -206,6 +214,7 @@ def plot_single_user_expenses(df, userid, granularity="day", ndays=0):
         return
 
     fig, ax1 = plt.subplots(figsize=(12, 6))
+    
 
     # Plot user expenses
     print(df)
@@ -239,4 +248,5 @@ def plot_single_user_expenses(df, userid, granularity="day", ndays=0):
     # Add legend and show plot
     ax1.legend(loc="upper left")
     plt.savefig("temp.png")
+    plt.close()
     return open("temp.png", "rb")

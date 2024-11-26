@@ -2,7 +2,7 @@
 This feature enables the user to delete all of their saved records till date in their expense tracker.
 
 # Location of Code for this Feature
-The code that implements this feature can be found [here](https://github.com/nainisha-b/MyExpenseBot/blob/main/code/delete.py)
+The code that implements this feature can be found [here](github.com/SoftwareEngg2024/SplitIT/blob/release/1.1/telebot_code/delete.py)
 
 # Code Description
 ## Functions

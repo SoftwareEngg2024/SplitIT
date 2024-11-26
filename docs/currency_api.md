@@ -4,7 +4,7 @@
 The `update_currencies` module provides functionality to update currency values in a JSON file based on the latest exchange rates. It utilizes the `currencyapicom` library to interact with a currency API.
 
 ## Code Location
-The code implementing this currency update feature can be found [here](https://github.com/NCSU-Group70-CSC505-SE-Fall-23/MyExpenseBot/blob/project3/code/currency_api.py).
+The code implementing this currency update feature can be found [here](https://github.com/SoftwareEngg2024/SplitIT/blob/release/1.1/telebot_code/currency_api.py).
 
 ## Code Description
 
