@@ -52,11 +52,14 @@ PocketTrack could provide tailored financial tips, such as spending advice, budg
 ### 📤 Automated Bill Reminders: 
 Never miss a payment again! PocketTrack could notify you of upcoming bills, calculate the impact on your budget, and even send reminders directly to your Telegram account.
 
+---
+
 ## Why PocketTrack?  
 PocketTrack offers a user-friendly and robust experience that integrates directly into your daily life through Telegram. Whether you need to track expenses, analyze spending trends, or stay updated with email reports, PocketTrack simplifies the process, giving you the financial clarity you need.
 
 Start your journey towards smarter financial management with PocketTrack! 🚀 
 
+---
 
 ## 💻 Tech Stack
 
@@ -68,6 +71,7 @@ Start your journey towards smarter financial management with PocketTrack! 🚀
 | **Telegram API** | ![Telegram](https://img.shields.io/badge/Telegram-%2326A5E4?style=for-the-badge&logo=telegram&logoColor=white) | An API used to create and manage Telegram bot functionalities.                               |
 | **OpenCV**       | ![OpenCV](https://img.shields.io/badge/OpenCV-%235C3EE8?style=for-the-badge&logo=opencv&logoColor=white)   | A computer vision library for image processing and analysis.                                 |
 | **Tesseract**    | ![Tesseract](https://img.shields.io/badge/Tesseract-%232BB671?style=for-the-badge&logo=tesseract&logoColor=white) | An OCR engine used for text recognition in images.                                           |
+---
 
 ## Installation Guide  
 
@@ -106,7 +110,7 @@ A successful run will display:
 ```bash
 TeleBot: Started polling.
 ```
-
+---
 ## Documentation 
 Refer here [Wiki Page](https://github.com/SoftwareEngg2024/SplitIT/wiki/Delta-file-(New-Changes-since-last-version))
 
