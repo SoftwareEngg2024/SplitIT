@@ -57,6 +57,18 @@ PocketTrack offers a user-friendly and robust experience that integrates directl
 
 Start your journey towards smarter financial management with PocketTrack! 🚀 
 
+
+## 💻 Tech Stack
+
+| Technology      | Icon                                                                                                     | Description                                                                                  |
+|------------------|---------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| **MongoDB**      | ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b?style=for-the-badge&logo=mongodb&logoColor=white) | A NoSQL database used for efficient and scalable data storage.                               |
+| **Flask**        | ![Flask](https://img.shields.io/badge/Flask-%23000000?style=for-the-badge&logo=flask&logoColor=white)      | A lightweight web framework for building APIs and web applications in Python.               |
+| **Python**       | ![Python](https://img.shields.io/badge/Python-%233776AB?style=for-the-badge&logo=python&logoColor=white)   | The core programming language used to develop the project.                                   |
+| **Telegram API** | ![Telegram](https://img.shields.io/badge/Telegram-%2326A5E4?style=for-the-badge&logo=telegram&logoColor=white) | An API used to create and manage Telegram bot functionalities.                               |
+| **OpenCV**       | ![OpenCV](https://img.shields.io/badge/OpenCV-%235C3EE8?style=for-the-badge&logo=opencv&logoColor=white)   | A computer vision library for image processing and analysis.                                 |
+| **Tesseract**    | ![Tesseract](https://img.shields.io/badge/Tesseract-%232BB671?style=for-the-badge&logo=tesseract&logoColor=white) | An OCR engine used for text recognition in images.                                           |
+
 ## Installation Guide  
 
 The below instructions can be followed in order to set up this bot at your end in just a few minutes!  
