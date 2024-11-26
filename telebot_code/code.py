@@ -98,13 +98,16 @@ def handle_email(message):
 def send_expense_report(message, user_email):
     user_id = message.chat.id
     expenses = fetch_user_expenses(user_id)  # Fetch expenditures from the database
-    summary = format_expenses(expenses)  # Format expenses for email
+    if expenses is None:
+        bot.reply_to(message, "Sorry, you have not made any transactions. Add a transaction to enable sending email reports")
+    else:
+        summary = format_expenses(expenses)  # Format expenses for email
 
-    try:
-        send_email(user_email, "Your Monthly Expenditures", summary)
-        bot.reply_to(message, "Your expenditure report has been sent to your email!")
-    except Exception as e:
-        bot.reply_to(message, f"Failed to send the email: {e}")
+        try:
+            send_email(user_email, "Your Monthly Expenditures", summary)
+            bot.reply_to(message, "Your expenditure report has been sent to your email!")
+        except Exception as e:
+            bot.reply_to(message, f"Failed to send the email: {e}")
 
 # Define listener for requests by user
 def listener(user_requests):

@@ -11,6 +11,9 @@ EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")  # App password
 
 def send_email(recipient_email, subject, body):
     """Send an email using Gmail SMTP."""
+    if not recipient_email or not subject or not body:
+        raise ValueError("Recipient, Subject, and Body are required fields.")
+    
     try:
         # Create the email content
         message = MIMEMultipart()
@@ -29,3 +32,4 @@ def send_email(recipient_email, subject, body):
     except Exception as e:
         print(f"Failed to send email: {e}")
         raise e
+
