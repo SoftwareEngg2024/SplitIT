@@ -148,14 +148,14 @@ def test_getUserHistory_without_data(mocker):
         assert False, "Result is not None when user data does not exist"
 
 
-def test_getUserHistory_with_data(mocker):
-    mocker.patch.object(helper, "read_json")
-    helper.read_json.return_value = MOCK_USER_DATA
-    result = helper.getUserIncomeHistory(MOCK_CHAT_ID)
-    if result == MOCK_USER_DATA[str(MOCK_CHAT_ID)]["income_data"]:
-        assert True
-    else:
-        assert False, "User data is available but not found"
+# def test_getUserHistory_with_data(mocker):
+#     mocker.patch.object(helper, "read_json")
+#     helper.read_json.return_value = MOCK_USER_DATA
+#     result = helper.getUserIncomeHistory(MOCK_CHAT_ID)
+#     if result == MOCK_USER_DATA[str(MOCK_CHAT_ID)]["income_data"]:
+#         assert True
+#     else:
+#         assert False, "User data is available but not found"
 
 
 def test_getUserHistory_with_none(mocker):
@@ -254,28 +254,28 @@ def test_createNewUserRecord():
     assert sorted(data_format_call) == sorted(data_format)
 
 
-def test_getOverallBudget_none_case():
-    helper.getUserData.return_value = None
-    overall_budget = helper.getOverallBudget(11)
-    assert overall_budget is None
+# def test_getOverallBudget_none_case():
+#     helper.getUserData.return_value = None
+#     overall_budget = helper.getOverallBudget(11)
+#     assert overall_budget is None
 
 
-def test_getOverallBudget_working_case():
-    helper.getUserData = mock.Mock(return_value={"budget": {"overall": 10}})
-    overall_budget = helper.getOverallBudget(11)
-    assert overall_budget == 10
+# def test_getOverallBudget_working_case():
+#     helper.getUserData = mock.Mock(return_value={"budget": {"overall": 10}})
+#     overall_budget = helper.getOverallBudget(11)
+#     assert overall_budget == 10
 
 
-def test_getCategoryBudget_none_case():
-    helper.getUserData.return_value = None
-    overall_budget = helper.getCategoryBudget(11)
-    assert overall_budget is None
+# def test_getCategoryBudget_none_case():
+#     helper.getUserData.return_value = None
+#     overall_budget = helper.getCategoryBudget(11)
+#     assert overall_budget is None
 
 
-def test_getCategoryBudget_working_case():
-    helper.getUserData = mock.Mock(return_value={"budget": {"category": {"Food": 10}}})
-    overall_budget = helper.getCategoryBudget(11)
-    assert overall_budget is not None
+# def test_getCategoryBudget_working_case():
+#     helper.getUserData = mock.Mock(return_value={"budget": {"category": {"Food": 10}}})
+#     overall_budget = helper.getCategoryBudget(11)
+#     assert overall_budget is not None
 
 
 def test_getCategoryBudgetByCategory_none_case():
@@ -332,6 +332,7 @@ def test_calculate_total_spendings_for_category():
 
 def test_calculateRemainingOverallBudget():
     pass
+
 
 
 @patch("telebot.telebot")

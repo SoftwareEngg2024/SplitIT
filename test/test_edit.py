@@ -3,6 +3,7 @@ import datetime
 from unittest.mock import patch
 from telebot import types
 from telebot_code import edit
+import helper
 
 MOCK_CHAT_ID = 101
 MOCK_USER_DATA = {
@@ -105,23 +106,22 @@ def test_enter_updated_data(mock_telebot, mocker):
 #     edit.edit_date(mc, selected_data, any, any, message.chat.id)
 #     assert mc.edit_message_text.assert_called_with
 
-
 @patch("telebot.telebot")
-def test_edit_category(mock_telebot, mocker):
+def test_run_simple(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
-    mocker.patch.object(edit, "helper")
-    edit.helper.read_json().return_value = MOCK_USER_DATA
-    edit.helper.getUserHistory(MOCK_CHAT_ID).return_value = MOCK_USER_DATA[
-        str(MOCK_CHAT_ID)
-    ]["data"]
-    message = create_message("hello from testing!")
+    mocker.patch.object(helper, "getIncomeOrExpense", return_value={"Income": "Income", "Expense": "Expense"})
+    message = create_message("hello from test run!")
     message.from_user = types.User(11, False, "test")
-    message.chat.id = MOCK_CHAT_ID
-    selected_data = MOCK_USER_DATA[str(MOCK_CHAT_ID)]["data"][0]
-    edit.edit_cat(message, mc, any, selected_data)
+    
+    # Mocking the call to the next handler
+    mc.register_next_step_handler.return_value = True
+    
+    # Running the function
+    edit.run(message, mc)
+    
+    # Assert that reply_to method was called
     assert mc.reply_to.called
-
 
 @patch("telebot.telebot")
 def test_edit_cost(mock_telebot, mocker):

@@ -3,26 +3,67 @@ import json
 from unittest.mock import patch
 from telebot import types
 from telebot_code import estimate
-
-
-@patch("telebot.telebot")
-def test_run(mock_telebot, mocker):
-    mc = mock_telebot.return_value
-    mc.reply_to.return_value = True
-    message = create_message("hello from test run!")
-    message.from_user = types.User(11, False, "test")
-    estimate.run(message, mc)
-    assert mc.send_message.called
-
+import helper
 
 @patch("telebot.telebot")
-def test_no_data_available(mock_telebot, mocker):
+def test_valid_spending_estimate(mock_telebot, mocker):
+    # Mocking the user data (the data can be simulated to return valid results)
+    MOCK_USER_DATA = {
+        "894127939": [
+            {"category": "Food", "amount": "10.00", "date": "2024-11-25"},
+            {"category": "Transport", "amount": "5.00", "date": "2024-11-25"}
+        ]
+    }
+
+    mocker.patch.object(estimate, "helper")
+    estimate.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    estimate.helper.getDateFormat.return_value = "%d-%b-%Y"
+    estimate.helper.getMonthFormat.return_value = "%b-%Y"
+
+    # Setting up the mock Telegram bot
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
-    message = create_message("/spendings")
+    message = create_message("Next day")
     message.from_user = types.User(11, False, "test")
-    estimate.run(message, mc)
+    message.text = "Next day"
+
+    # Calling the function under test
+    estimate.estimate_total(message, mc)
+
+    # Assert that the bot sends a message (which indicates success)
     assert mc.send_message.called
+
+@patch("telebot.telebot")
+def test_invalid_period_format(mock_telebot, mocker):
+    # Mocking the user data
+    MOCK_USER_DATA = {
+        "894127939": [
+            {"category": "Food", "amount": "10.00", "date": "2024-11-25"},
+            {"category": "Transport", "amount": "5.00", "date": "2024-11-25"}
+        ]
+    }
+
+    mocker.patch.object(estimate, "helper")
+    estimate.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    estimate.helper.getDateFormat.return_value = "%d-%b-%Y"
+    estimate.helper.getMonthFormat.return_value = "%b-%Y"
+
+    # Setting up the mock Telegram bot
+    mc = mock_telebot.return_value
+    mc.reply_to.return_value = True
+    message = create_message("Next week")
+    message.from_user = types.User(11, False, "test")
+    message.text = "Next week"  # Invalid option that triggers error handling
+
+    # Calling the function under test
+    estimate.estimate_total(message, mc)
+
+    # Assert that the bot sends an error message (indicating error handling)
+    assert mc.send_message.called
+    assert "Sorry I can't show an estimate for" in mc.send_message.call_args[0][1]
+
 
 
 @patch("telebot.telebot")
