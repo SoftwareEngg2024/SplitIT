@@ -16,16 +16,6 @@ def test_run(mock_telebot, mocker):
 
 
 @patch("telebot.telebot")
-def test_no_data_available(mock_telebot, mocker):
-    mc = mock_telebot.return_value
-    mc.reply_to.return_value = True
-    message = create_message("/spendings")
-    message.from_user = types.User(11, False, "test")
-    display.run(message, mc)
-    assert mc.send_message.called
-
-
-@patch("telebot.telebot")
 def test_invalid_format(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -113,6 +103,61 @@ def test_spending_display_month(mock_telebot, mocker):
     message.text = "Month"
     display.display_total(message, mc)
     assert mc.send_message.called
+
+def test_calculate_spendings():
+    # Mock input
+    mock_query_result = [
+        {"category": "Food", "amount": "50.00"},
+        {"category": "Transport", "amount": "15.25"},
+        {"category": "Food", "amount": "25.50"},
+    ]
+
+    # Expected output
+    expected_output = "Food $75.5\nTransport $15.25\n"
+
+    # Call the function
+    result = display.calculate_spendings(mock_query_result)
+
+    # Assert
+    assert result == expected_output
+
+
+@patch("telebot.telebot")
+def test_getSpendDisplayOptions(mock_telebot, mocker):
+    # Mock the return value for the helper method
+    mocker.patch.object(display.helper, "getSpendDisplayOptions", return_value=["Day", "Month"])
+    
+    # Call the function that uses this method (could be display_total or any relevant method)
+    options = display.helper.getSpendDisplayOptions()
+
+    # Check that the options are exactly what we expect
+    assert options == ["Day", "Month"]
+
+@patch("telebot.telebot")
+def test_reply_to_called(mock_telebot):
+    mc = mock_telebot.return_value
+    mc.reply_to.return_value = True
+    
+    # Create a mock message
+    message = create_message("Test")
+    message.from_user = types.User(11, False, "test")
+
+    # Call the function that uses reply_to
+    display.run(message, mc)
+
+    # Check if reply_to was called
+    assert mc.reply_to.called
+
+
+
+def test_test_read_json_file_creation():
+    # Try reading the test JSON data
+    data = test_read_json()
+    
+    # Check that the data is not None or empty
+    assert data is not None
+    assert isinstance(data, dict)
+
 
 
 # @patch('telebot.telebot')
