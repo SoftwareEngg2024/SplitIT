@@ -163,7 +163,6 @@ def post_type_selection(message, bot):
 
 def fetch_user_expenses(user_id):
     """Fetch user expenses from the database."""
-<<<<<<< HEAD
     transaction = db_operations.read_user_transaction(user_id)
     expenses = transaction.transactions["expense_data"]
     if expenses is None:
@@ -173,10 +172,6 @@ def fetch_user_expenses(user_id):
         for E in expenses:
             L.append({"category" : E["category"], "amount":E["amountUSD"], "date": E["date"]})
 
-=======
-    # Use db_operations.read_user_transaction(user_id)
-    # Then put all retrieved transactions into format below. Check the photo for the record format.
->>>>>>> d0932a70b86ca32874e841546b271eb46314f7b6
     # Dummy implementation; replace with actual database query
     # db
     return L
