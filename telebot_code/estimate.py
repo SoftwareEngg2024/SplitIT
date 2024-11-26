@@ -30,42 +30,46 @@ def estimate_total(message, bot):
         DayWeekMonth = message.text
 
         if DayWeekMonth not in helper.getSpendEstimateOptions():
-            raise Exception(
+            bot.send_message(chat_id,
                 "Sorry I can't show an estimate for \"{}\"!".format(
                     DayWeekMonth))
-
-        history = helper.getUserHistory(user_id, 'expense')
-        if history is None:
-            raise Exception(
-                "Oops! Looks like you do not have any spending records!")
-
-        bot.send_message(chat_id, "Hold on! Calculating...")
-        # show the bot "typing" (max. 5 secs)
-        bot.send_chat_action(chat_id, 'typing')
-        time.sleep(0.5)
-
-        total_text = ""
-        days_to_estimate = 0
-        if DayWeekMonth == 'Next day':
-            days_to_estimate = 1
-        elif DayWeekMonth == 'Next month':
-            days_to_estimate = 30
-            # query all that contains today's date
-        # query all that contains all history
-        queryResult = [value for index, value in enumerate(history)]
-
-        total_text = calculate_estimate(queryResult, days_to_estimate)
-
-        spending_text = ""
-        if len(total_text) == 0:
-            spending_text = "You have no estimate for {}!".format(DayWeekMonth)
+            bot.register_next_step_handler(message, run, bot)
         else:
-            spending_text = "Here are your estimated spendings"
-            spending_text += " for the " + DayWeekMonth.lower()
-            spending_text += ":\nCATEGORIES,AMOUNT \n----------------------\n"
-            spending_text += total_text
 
-        bot.send_message(chat_id, spending_text)
+            history = helper.getUserHistory(user_id, 'expense')
+            if history is None:
+                bot.send_message(chat_id,
+                    "Oops! Looks like you do not have any spending records! Try again after adding some.")
+                
+            else:
+
+                bot.send_message(chat_id, "Hold on! Calculating...")
+                # show the bot "typing" (max. 5 secs)
+                bot.send_chat_action(chat_id, 'typing')
+                time.sleep(0.5)
+
+                total_text = ""
+                days_to_estimate = 0
+                if DayWeekMonth == 'Next day':
+                    days_to_estimate = 1
+                elif DayWeekMonth == 'Next month':
+                    days_to_estimate = 30
+                    # query all that contains today's date
+                # query all that contains all history
+                queryResult = [value for index, value in enumerate(history)]
+
+                total_text = calculate_estimate(queryResult, days_to_estimate)
+
+                spending_text = ""
+                if len(total_text) == 0:
+                    spending_text = "You have no estimate for {}!".format(DayWeekMonth)
+                else:
+                    spending_text = "Here are your estimated spendings"
+                    spending_text += " for the " + DayWeekMonth.lower()
+                    spending_text += ":\nCATEGORIES,AMOUNT \n----------------------\n"
+                    spending_text += total_text
+
+                bot.send_message(chat_id, spending_text)
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, str(e))

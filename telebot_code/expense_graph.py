@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
 import add_group_exp
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1e2fdf5 (Enabled coverage upload)
 import db_operations
 import ast
 from telebot import types
@@ -48,7 +52,7 @@ def single_or_group_expenses(message, bot, granularity, ndays):
     uid = message.from_user.id
     if message.text == 'Mine':
         dfp = []
-        det = db_operations.read_user_transaction(uid)['transactions']['expense_data']
+        det = db_operations.read_user_transaction(uid)
         if det == None:
             bot.send_message(chid, "No expenses made yet")
         else:
@@ -62,10 +66,11 @@ def single_or_group_expenses(message, bot, granularity, ndays):
             bot.send_photo(chid, F)
     elif message.text == 'Group':
         det = read_json()
-        if det == {} or not (uid in det.keys()):
+        
+        if det == {} or not (str(uid) in det.keys()):
             bot.send_message(chid, "No group expenses made yet")
         else:
-            df = conv_to_df(det[uid]['expense'])
+            df = conv_to_df(det[str(uid)]['expense'])
             F = plot_expenses_with_histogram(df, granularity=granularity, ndays=ndays)
             bot.send_message(chid, "Here is your timeline of your group expenses:")
             bot.send_photo(chid, F)
@@ -106,7 +111,7 @@ def plot_expenses_with_histogram(df, granularity='day', ndays=0):
             ndays = L
         l = L - ndays
 
-        ax1.plot(user_data['timestamp'][l:], user_data['expense'][l:], label=user, marker='o')
+        ax1.plot(pd.to_datetime(user_data['timestamp'][l:]), user_data['expense'][l:], label=user, marker='o')
 
     ax1.xaxis.set_major_locator(mdates.DayLocator() if granularity == 'day' else mdates.MonthLocator())
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d' if granularity == 'day' else '%Y-%m'))
@@ -120,7 +125,7 @@ def plot_expenses_with_histogram(df, granularity='day', ndays=0):
     total_expenses_per_day = df.groupby('timestamp')['expense'].sum().reset_index()
     
 
-    bars = ax2.bar(total_expenses_per_day['timestamp'], total_expenses_per_day['expense'], 
+    bars = ax2.bar(pd.to_datetime(total_expenses_per_day['timestamp']), total_expenses_per_day['expense'], 
                    alpha=0.2, color='gray', width=0.8)
 
     ax2.set_ylabel("Total Expenses (All Users)")
@@ -145,11 +150,14 @@ def plot_single_user_expenses(df, userid, granularity='day', ndays=0):
     fig, ax1 = plt.subplots(figsize=(12, 6))
 
     # Plot user expenses
+    print(df)
     L = len(user_data['timestamp'])
+    total_expenses_per_day = df.groupby('timestamp')['expense'].sum().reset_index()
+    print(total_expenses_per_day["expense"])
     if ndays == 0:
         ndays = L
     l = L - ndays
-    ax1.plot(user_data['timestamp'][l:], user_data['expense'][l:], label=f"User {userid}", marker='o')
+    ax1.plot(pd.to_datetime(total_expenses_per_day['timestamp'][l:]), total_expenses_per_day['expense'][l:], label=f"User {userid}", marker='o')
 
     # Format x-axis
     ax1.xaxis.set_major_locator(mdates.DayLocator() if granularity == 'day' else mdates.MonthLocator())

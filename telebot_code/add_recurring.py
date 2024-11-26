@@ -51,16 +51,17 @@ def post_category_selection(message, bot, selectedType):
         else:
             categories = helper.getSpendCategories()
         if selected_category not in categories:
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognise this category \"{}\"!".format(selected_category))
-        selectedCat[user_id] = selected_category
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        options = helper.getCurrencyOptions()
-        markup.row_width = 2
-        for c in options.values():
-            markup.add(c)
-        msg = bot.reply_to(message, 'Select Currency', reply_markup=markup)
-        bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
+            bot.send_message(chat_id, 'Invalid. Try again.')
+            bot.register_next_step_handler(message, run, bot)
+        else:
+            selectedCat[user_id] = selected_category
+            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+            options = helper.getCurrencyOptions()
+            markup.row_width = 2
+            for c in options.values():
+                markup.add(c)
+            msg = bot.reply_to(message, 'Select Currency', reply_markup=markup)
+            bot.register_next_step_handler(message, post_currency_selection, bot,selected_category)
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, 'Oh no. ' + str(e))
@@ -73,14 +74,15 @@ def post_currency_selection(message, bot, selected_category):
         selectedCurrency = message.text
         currencyOptions = helper.getCurrencyOptions()
         if selectedCurrency not in currencyOptions:
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognise this currency \"{}\"!".format(selectedCurrency))
-        selectedCurr[user_id] = selectedCurrency
-        if str(selectedTyp[user_id]) == "Income" :
-            message = bot.send_message(chat_id, 'How much did you receive through {}? \n(Enter numeric values only)'.format(str(selected_category)))
+            bot.send_message(chat_id, 'Invalid message. Try again')
+            bot.register_next_step_handler(message, run, bot)
         else:
-            message = bot.send_message(chat_id, 'How much did you spend on {}? \n(Enter numeric values only)'.format(str(selected_category)))
-        bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
+            selectedCurr[user_id] = selectedCurrency
+            if str(selectedTyp[user_id]) == "Income" :
+                message = bot.send_message(chat_id, 'How much did you receive through {}? \n(Enter numeric values only)'.format(str(selected_category)))
+            else:
+                message = bot.send_message(chat_id, 'How much did you spend on {}? \n(Enter numeric values only)'.format(str(selected_category)))
+            bot.register_next_step_handler(message, post_amount_input, bot, selectedCurrency)
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)
@@ -92,10 +94,12 @@ def post_amount_input(message, bot, selectedCurrency):
         amount_entered = message.text
         amount_value = helper.validate_entered_amount(amount_entered)  # validate
         if amount_value == 0:  # cannot be $0 spending
-            raise Exception("Spent amount has to be a non-zero number.")
-        selectedAm[user_id] = amount_value   
-        message = bot.send_message(chat_id, 'For how many months in the future will the expense/income be there? \n(Enter integer values only)')
-        bot.register_next_step_handler(message, post_duration_input, bot, amount_value)
+            bot.send_message(chat_id, 'Invalid message. Try again')
+            bot.register_next_step_handler(message, post_type_selection, bot)
+        else:
+            selectedAm[user_id] = amount_value   
+            message = bot.send_message(chat_id, 'For how many months in the future will the expense/income be there? \n(Enter integer values only)')
+            bot.register_next_step_handler(message, post_duration_input, bot, amount_value)
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, 'Oh no. ' + str(e))

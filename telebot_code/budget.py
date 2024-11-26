@@ -23,13 +23,14 @@ def post_operation_selection(message, bot):
         options = helper.getBudgetOptions()
         if op not in options.values():
             bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognise this operation \"{}\"!".format(op))
-        if op == options['update']:
-            budget_update.run(message, bot)
-        elif op == options['view']:
-            budget_view.run(message, bot)
-        elif op == options['delete']:
-            budget_delete.run(message, bot)
+            bot.register_next_step_handler(message, run, bot)
+        else:
+            if op == options['update']:
+                budget_update.run(message, bot)
+            elif op == options['view']:
+                budget_view.run(message, bot)
+            elif op == options['delete']:
+                budget_delete.run(message, bot)
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)

@@ -35,15 +35,20 @@ def post_type_selection(message, bot, type, retry):
             markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
             user_id = message.from_user.id
             selectedType = message.text
-        if selectedType == "Income":
-            for c in helper.getIncomeCategories():
-                markup.add(c)
+        if not selectedType in helper.getIncomeOrExpense():
+            bot.send_message(message.chat.id, 'Select Income or Expense')
+            bot.register_next_step_handler(message, run, bot)
         else:
-            for c in helper.getSpendCategories():
-                markup.add(c)
-        msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
-        selectedTyp[user_id] = selectedType
-        bot.register_next_step_handler(msg, post_category_selection, bot, selectedType)
+            if selectedType == "Income":
+                for c in helper.getIncomeCategories():
+                    markup.add(c)
+            elif selectedType == "Expense":
+                for c in helper.getSpendCategories():
+                    markup.add(c)
+            
+            msg = bot.reply_to(message, 'Select Category', reply_markup=markup)
+            selectedTyp[user_id] = selectedType
+            bot.register_next_step_handler(msg, post_category_selection, bot, selectedType)
     except Exception as e:
         # print("hit exception")
         helper.throw_exception(e, message, bot, logging)

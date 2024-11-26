@@ -36,6 +36,7 @@ jobs:
       run: |
         python -m pytest --cov test/
     - name: Upload coverage
+      if: always()
       uses: coverallsapp/github-action@v2.3.4
 
 
