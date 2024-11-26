@@ -1,11 +1,12 @@
 # CSC 510 Fall '24 - Group 41
 
 # PocketTrack 💰📊  
+<p align='center'>
 <a href='https://coveralls.io/github/SoftwareEngg2024/SplitIT?branch=release/1.1'><img src='https://coveralls.io/repos/github/SoftwareEngg2024/SplitIT/badge.svg?branch=release/1.1' alt='Coverage Status' /></a>
 <a href="https://github.com/SoftwareEngg2024/SplitIT/tree/release/1.0/docs"><img alt="Documentation Status" src="https://img.shields.io/badge/Docs-Click-green"></a>
 <a href="https://github.com/SoftwareEngg2024/SplitIT/actions/workflows/test_and_coverage.yaml"><img src='https://github.com/SoftwareEngg2024/SplitIT/actions/workflows/test_and_coverage.yaml/badge.svg?branch=release%2F1.1' /></a>
 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green" />
-
+</p>
 
 
 ## A telegram bot for tracking expenses 
