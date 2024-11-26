@@ -81,6 +81,7 @@ scanned_expense_options = {
 
 
 # set of implemented commands and their description
+# set of implemented commands and their description
 commands = {
     'menu': 'Display this menu',
     'add': 'Record/Add a new Spending or Income',
@@ -89,15 +90,17 @@ commands = {
     'visualize': 'Get visual representation of the money you spent or earned in different categories.',
     'display': 'Show sum of expenditure for the current day/month',
     'estimate': 'Show an estimate of expenditure for the next day/month',
-    'history': 'Display spending.income history',
+    'history': 'Display spending/income history',
     'delete': 'Clear/Erase all your records',
     'edit': 'Edit/Change spending details',
     'budget': 'Add/Update/View/Delete budget',
     'category': 'Add/Delete/Show custom categories',
     'link': 'Link Telegram User with email',
-    'pdf': 'Generate a pdf for Income or History',
+    'pdf': 'Generate a PDF for Income or History',
+    'email_summary': 'Send monthly summary via email',  # Add this line
     'scan': "Scan a receipt (Experimental) (Currently walmart supported)"
 }
+
 
 
 dateFormat = '%d-%b-%y'
