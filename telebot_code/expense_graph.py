@@ -5,10 +5,6 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
 import add_group_exp
-<<<<<<< HEAD
-=======
-
->>>>>>> 1e2fdf5 (Enabled coverage upload)
 import db_operations
 import ast
 from telebot import types
