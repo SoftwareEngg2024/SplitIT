@@ -37,20 +37,14 @@ Easily download your monthly expense reports in PDF format. Share or save your f
 
 ## 🚀 Future Scope  
 
-### 📌 Shared Budget Management  
-Collaborate with friends or family to manage shared budgets, track group expenses, and split costs effortlessly. This feature is ideal for roommates, travel groups, or anyone managing expenses as a team
+## Predictive Expense Analysis 📊
+Using AI, PocketTrack aims to predict future spending trends based on user habits. This feature will help identify potential overspending, recommend savings opportunities, and prepare users for upcoming expenses.
 
-### 📊 Predictive Expense Analysis  
-Leverage AI to predict future spending trends based on your habits. This feature can alert you to potential overspending, recommend savings opportunities, and help you prepare for upcoming expenses.
+## Personalized Recommendations 💡
+PocketTrack plans to offer personalized financial advice, including spending tips, budgeting strategies, and savings plans, tailored to each user’s financial patterns and data.
 
-### 💡 Gamification of Savings  
-Turn saving money into a fun and rewarding experience! Earn badges for achieving savings milestones, streak rewards for consistent financial tracking, and personalized challenges to help you cut unnecessary spending.
-
-### 🎉 Personalized Recommendations  
-PocketTrack could provide tailored financial tips, such as spending advice, budgeting strategies, and savings plans based on your unique financial data and patterns.
-
-### 📤 Automated Bill Reminders: 
-Never miss a payment again! PocketTrack could notify you of upcoming bills, calculate the impact on your budget, and even send reminders directly to your Telegram account.
+## Investment Tracking 💼
+Future updates will include the ability to track and manage investments alongside regular expenses, providing a comprehensive financial overview within a single platform.
 
 ---
 
