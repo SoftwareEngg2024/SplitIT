@@ -95,6 +95,9 @@ Start a terminal session in the directory where the project has been cloned. Run
 ```bash
 pip install -r requirements.txt
 ```
+### Install Tesseract-ocr
+After installing it, get the tesseract 'eng' trained data
+
 ### Create Your Telegram Bot
 1. Search for BotFather in Telegram.
 2. Use /newbot to create a new bot.
