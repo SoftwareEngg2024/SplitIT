@@ -19,6 +19,9 @@ With new and enhanced features, PocketTrack simplifies expense management, offer
 
 ---
 
+## Introduction
+
+
 ## 🌟 New Features 🌟  
 
 ### 📧 Email Summaries  
@@ -45,13 +48,6 @@ PocketTrack plans to offer personalized financial advice, including spending tip
 
 ## Investment Tracking 💼
 Future updates will include the ability to track and manage investments alongside regular expenses, providing a comprehensive financial overview within a single platform.
-
----
-
-## Why PocketTrack?  
-PocketTrack offers a user-friendly and robust experience that integrates directly into your daily life through Telegram. Whether you need to track expenses, analyze spending trends, or stay updated with email reports, PocketTrack simplifies the process, giving you the financial clarity you need.
-
-Start your journey towards smarter financial management with PocketTrack! 🚀 
 
 ---
 
