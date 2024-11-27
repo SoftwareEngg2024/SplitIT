@@ -30,6 +30,9 @@ def post_type_selection(message, bot):
         bot.send_message(chat_id, message)
         with PdfPages("user_history.pdf") as pdf:
             top = 0.8
+            fig = plt.figure()
+            ax = fig.add_subplot(1, 1, 1)
+            top = 0.8
             if len(user_history) == 0:
                 plt.text(
                     0.1,
@@ -40,6 +43,7 @@ def post_type_selection(message, bot):
                     transform=ax.transAxes,
                     fontsize=20,
                 )
+                plt.close()
             else:
 
                 for i in range(npages):
