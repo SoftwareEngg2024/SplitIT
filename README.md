@@ -11,15 +11,27 @@
 <a href="https://handle.stage.datacite.org/10.5072/zenodo.137040"><img src="https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.137040.svg" alt="DOI"></a>
 </p>
 
+# <b>Contents</b>
 
-## A telegram bot for tracking expenses 
+- [Introduction](https://github.com/SoftwareEngg2024/SplitIT/edit/release-final/1.1/README.md#introduction)<br>
+- [New Features](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-new-features-)
+- [Future Scope](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-future-scope)<br>
+- [Video](https://github.com/SoftwareEngg2024/CineScout/tree/ver_i?tab=readme-ov-file#video)<br>
+- [Tech Stack](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-tech-stack)<br>
+- [Installation Guide](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#installation-guide)<br>
+- [Documentation](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#documentation)<br>
+- [Bug](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#bug)<br>
+- [License](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#license-)
+
+## Introduction
+### A telegram bot for tracking expenses 
 **PocketTrack** is a smart and interactive Telegram bot that helps you manage your expenses with ease. Whether you’re tracking daily spending, analyzing monthly trends, or keeping your budget in check, PocketTrack is your go-to financial assistant.  
 
 With new and enhanced features, PocketTrack simplifies expense management, offering a seamless and efficient user experience.  
 
 ---
 
-## Introduction
+
 
 
 ## 🌟 New Features 🌟  
