@@ -40,6 +40,7 @@ def post_type_selection(message, bot):
             message = "Alright. I just created a pdf of your " + selectedType + "history!"
             bot.send_message(chat_id, message)
             with PdfPages("user_history.pdf") as pdf:
+                top = 0.8
                 if len(user_history) == 0:
                     plt.text(
                         0.1,
