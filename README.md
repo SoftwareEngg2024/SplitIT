@@ -13,10 +13,10 @@
 
 # <b>Contents</b>
 
-- [Introduction](https://github.com/SoftwareEngg2024/SplitIT/edit/release-final/1.1/README.md#introduction)<br>
+- [Introduction](https://github.com/SoftwareEngg2024/SplitIT/blob/release-final/1.1/README.md#introduction)<br>
 - [New Features](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-new-features-)
 - [Future Scope](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-future-scope)<br>
-- [Video](https://github.com/SoftwareEngg2024/CineScout/tree/ver_i?tab=readme-ov-file#video)<br>
+- [Video](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-future-scope)<br>
 - [Tech Stack](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-tech-stack)<br>
 - [Installation Guide](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#installation-guide)<br>
 - [Documentation](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#documentation)<br>
@@ -60,6 +60,13 @@ PocketTrack plans to offer personalized financial advice, including spending tip
 
 ## Investment Tracking 💼
 Future updates will include the ability to track and manage investments alongside regular expenses, providing a comprehensive financial overview within a single platform.
+
+---
+## Check out our enhancements!
+
+[**Animation**](https://drive.google.com/file/d/16Ly_eMAs1fXZXeA9VF3a3ZpHykJDCJSD/view?usp=sharing) <br>
+
+[**Demo**](https://drive.google.com/file/d/1QKwa_3-39KrnOrXAto8ZlE9SYtYuFGS7/view?usp=sharing)
 
 ---
 
