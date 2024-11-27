@@ -172,7 +172,7 @@ def plot_expenses_with_histogram(df, granularity="day", ndays=0):
     total_expenses_per_day = df.groupby("timestamp")["expense"].sum().reset_index()
 
     bars = ax2.bar(
-        pd.to_datetime(total_expenses_per_day.iloc["timestamp"]),
+        pd.to_datetime(total_expenses_per_day["timestamp"]),
         total_expenses_per_day["expense"],
         alpha=0.2,
         color="gray",
