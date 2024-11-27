@@ -220,7 +220,7 @@ def post_auto_or_manual_selection(message, bot):
         msg = bot.reply_to(message, "Sure, you can try again.")
         bot.register_next_step_handler(msg, run, bot)
     else:
-        bot.send_message("OK. Enter your expense date.")
+        bot.send_message(message.chat.id, "OK. Enter your expense date.")
         bot.register_next_step_handler(msg, post_manual_expense_selection, bot, [])
 
 
