@@ -16,7 +16,7 @@
 - [Introduction](https://github.com/SoftwareEngg2024/SplitIT/blob/release-final/1.1/README.md#introduction)<br>
 - [New Features](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-new-features-)
 - [Future Scope](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-future-scope)<br>
-- [Video](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-future-scope)<br>
+- [Video](https://github.com/SoftwareEngg2024/SplitIT/blob/release-final/1.1/README.md#check-out-our-enhancements)<br>
 - [Tech Stack](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#-tech-stack)<br>
 - [Installation Guide](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#installation-guide)<br>
 - [Documentation](https://github.com/SoftwareEngg2024/SplitIT?tab=readme-ov-file#documentation)<br>
